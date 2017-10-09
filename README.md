@@ -1,13 +1,16 @@
 # qewd: Quick and Easy Web Developer
- 
+
+[![Build Status](https://travis-ci.org/killmenot/qewd.svg?branch=tests)](https://travis-ci.org/killmenot/qewd) [![Coverage Status](https://coveralls.io/repos/github/killmenot/qewd/badge.svg?branch=tests)](https://coveralls.io/github/killmenot/qewd?branch=tests) [![Dependency Status](https://gemnasium.com/badges/github.com/killmenot/qewd.svg)](https://gemnasium.com/github.com/killmenot/qewd)
+
 Rob Tweed <rtweed@mgateway.com>  
 24 February 2016, M/Gateway Developments Ltd [http://www.mgateway.com](http://www.mgateway.com)  
 
-Twitter: @rtweed
+Twitter: [@rtweed](https://twitter.com/rtweed)
 
 Google Group for discussions, support, advice etc: [http://groups.google.co.uk/group/enterprise-web-developer-community](http://groups.google.co.uk/group/enterprise-web-developer-community)
 
 Thanks to Ward De Backer for debugging assistance and functionality suggestions
+
 
 ## What is QEWD?
 
@@ -16,11 +19,9 @@ This is best answered by reading [this article on QEWD](https://robtweed.wordpre
 In summary: [QEWD](http://qewdjs.com) is a Node.js-based platform for developing and running interactive browser-based applications and Web/REST services.
 
 QEWD makes use of the [ewd-qoper8](https://github.com/robtweed/ewd-qoper8) module to provide an isolated run-time 
-environment for each of your message/request handler functions, meaning that your JavaScript handler functions can use synchronous, 
-blocking APIs if you wish / prefer.
+environment for each of your message/request handler functions, meaning that your JavaScript handler functions can use synchronous, blocking APIs if you wish / prefer.
 
-QEWD includes an embedded persistent JSON database and session store/cache using Global Storage provided by either the Redis, 
-GT.M or Cache databases.
+QEWD includes an embedded persistent JSON database and session store/cache using Global Storage provided by either the Redis, GT.M or Cache databases.
 
 Interactive QEWD applications can be developed using any client-side JavaScript framework (eg Angular, React, etc).
 
@@ -32,6 +33,7 @@ QEWD uses Express to provide its outward-facing HTTP(S) interface, and Socket.io
 ## Installing
 
        npm install qewd
+
 
 ## Learning / Using QEWD
 

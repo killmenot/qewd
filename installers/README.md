@@ -1,20 +1,19 @@
 # QEWD Installers: Pre-built automated installers for creating working EWD 3 systems
  
-This folder contains installers for creating ready-to-run QEWD systems.  They are ideal for anyone
-new to QEWD and Redis, Cache or GT.M who wants to quickly discover how it works etc.  They are also a great way to quickly get a
+This folder contains installers for creating ready-to-run QEWD systems. They are ideal for anyone new to QEWD and Redis, Cache or GT.M who wants to quickly discover how it works etc. They are also a great way to quickly get a
 working QEWD system up and running that you can then adapt and customise.
 
 The installers are for use with Linux systems, virtual machines or Amazon EC2 instances, and also for the Raspberry Pi.
 
-Use them as a starting point and guide for creating customised systems and/or for installing QEWD on systems that already 
-include Node.js, Cache or GT.M
+Use them as a starting point and guide for creating customised systems and/or for installing QEWD on systems that already include Node.js, Cache or GT.M
 
 Rob Tweed <rtweed@mgateway.com>  
 4 January 2017, M/Gateway Developments Ltd [http://www.mgateway.com](http://www.mgateway.com)  
 
-Twitter: @rtweed
+Twitter: [@rtweed](https://twitter.com/rtweed)
 
 Google Group for discussions, support, advice etc: [http://groups.google.co.uk/group/enterprise-web-developer-community](http://groups.google.co.uk/group/enterprise-web-developer-community)
+
 
 ## Using the Installers
 
