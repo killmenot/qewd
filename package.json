@@ -21,7 +21,7 @@
     "date": "7 September 2017"
   },
   "scripts": {
-    "lint": "jshint lib/appHandler.js spec",
+    "lint": "jshint spec",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "jasmine --config=spec/support/unit.json",
     "test:integration": "jasmine --config=spec/support/integration.json",

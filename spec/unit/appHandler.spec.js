@@ -7,7 +7,7 @@ var dbMock = require('./mocks/db');
 var documentStoreMock = require('./mocks/documentStore');
 var sessionsMock = require('./mocks/sessions');
 var appHandler = rewire('../../lib/appHandler');
-var loadModuleSpec = require('./shared/appHandler/loadModuleSpec');
+var loadModuleSpec = require('./shared/loadModuleSpec');
 
 describe('unit/appHandler:', function () {
   var Worker;
