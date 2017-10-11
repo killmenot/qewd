@@ -3,7 +3,7 @@
 var rewire = require('rewire');
 var getFragment = rewire('../../lib/getFragment');
 
-fdescribe('unit/getFragment:', function () {
+describe('unit/getFragment:', function () {
   var messageObj;
   var application;
   var finished;
