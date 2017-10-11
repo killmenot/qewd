@@ -11,7 +11,6 @@
   "description": "Quick and Easy Web Development",
   "main": "index.js",
   "author": "Rob Tweed, M/Gateway Developments Ltd",
-  "description": "Quick and Easy Web Development",
   "license": "Apache-2.0",
   "homepage": "https://github.com/robtweed/qewd#readme",
   "repository": {
@@ -20,9 +19,6 @@
   },
   "bugs": {
     "url": "https://github.com/robtweed/qewd/issues"
-  },
-  "config": {
-    "date": "7 September 2017"
   },
   "scripts": {
     "lint": "jshint spec",
@@ -70,6 +66,7 @@
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.1.1",
     "jshint": "^2.9.5",
+    "mockery": "^2.1.0",
     "nyc": "^11.1.0",
     "pre-commit": "^1.2.2",
     "rewire": "^2.5.2"
