@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  mock: function () {
-    var db = {
+  mock: () => {
+    const db = {
       lock: jasmine.createSpy()
     };
 

@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  mock: function () {
-    var sessions = {
+  mock: () => {
+    const sessions = {
       authenticate: jasmine.createSpy(),
       create: jasmine.createSpy()
     };

@@ -3,7 +3,7 @@
 const rewire = require('rewire');
 const jwtHandler = rewire('../../lib/jwtHandler');
 
-fdescribe('unit/jwtHandler:', () => {
+describe('unit/jwtHandler:', () => {
   let Worker = null;
   let Master = null;
   let worker = null;

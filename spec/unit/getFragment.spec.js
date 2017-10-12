@@ -1,22 +1,22 @@
 'use strict';
 
-var rewire = require('rewire');
-var getFragment = rewire('../../lib/getFragment');
+const rewire = require('rewire');
+const getFragment = rewire('../../lib/getFragment');
 
-describe('unit/getFragment:', function () {
-  var messageObj;
-  var application;
-  var finished;
-  var Worker;
-  var worker;
-  var fsMock;
+describe('unit/getFragment:', () => {
+  let messageObj = null;
+  let application = null;
+  let finished = null;
+  let Worker = null;
+  let worker = null;
+  let fsMock = null;
 
-  var revert = function (obj) {
+  const revert = (obj) => {
     obj.__revert__();
     delete obj.__revert__;
   };
 
-  beforeAll(function () {
+  beforeAll(() => {
     Worker = function () {
       this.userDefined = {
         config: {
@@ -32,7 +32,7 @@ describe('unit/getFragment:', function () {
     };
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     worker = new Worker();
 
     messageObj = {
@@ -51,12 +51,12 @@ describe('unit/getFragment:', function () {
     require.__revert__ = getFragment.__set__('require', require);
   });
 
-  afterEach(function () {
+  afterEach(() => {
     revert(fsMock);
     revert(require);
   });
 
-  it('should return service not permitted for application error', function () {
+  it('should return service not permitted for application error', () => {
     messageObj.service = 'baz';
 
     getFragment.call(worker, messageObj, application, finished);
@@ -66,7 +66,7 @@ describe('unit/getFragment:', function () {
     });
   });
 
-  describe('file does not exist error', function () {
+  describe('file does not exist error', () => {
     beforeEach(function () {
       delete messageObj.service;
 
@@ -76,7 +76,7 @@ describe('unit/getFragment:', function () {
       });
     });
 
-    it('should return error', function () {
+    it('should return error', () => {
       getFragment.call(worker, messageObj, application, finished);
 
       expect(finished).toHaveBeenCalledWith({
@@ -85,7 +85,7 @@ describe('unit/getFragment:', function () {
       });
     });
 
-    it('should return error with service prop', function () {
+    it('should return error with service prop', () => {
       messageObj.service = 'bar';
 
       getFragment.call(worker, messageObj, application, finished);
@@ -97,7 +97,7 @@ describe('unit/getFragment:', function () {
       });
     });
 
-    it('should return error with service prop', function () {
+    it('should return error with service prop', () => {
       messageObj.params.isServiceFragment = true;
 
       getFragment.call(worker, messageObj, application, finished);
@@ -110,7 +110,7 @@ describe('unit/getFragment:', function () {
     });
   });
 
-  it('should return unable to read file error', function () {
+  it('should return unable to read file error', () => {
     require.resolve.and.returnValue('/services/bar.js');
     fsMock.exists.and.callFake(function (path, cb) {
       cb(true);
@@ -126,7 +126,7 @@ describe('unit/getFragment:', function () {
     });
   });
 
-  it('should return content', function () {
+  it('should return content', () => {
     require.resolve.and.returnValue('/services/bar.js');
     fsMock.exists.and.callFake(function (path, cb) {
       cb(true);

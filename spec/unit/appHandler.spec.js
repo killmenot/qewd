@@ -1,37 +1,34 @@
 'use strict';
 
-var events = require('events');
-var mockery = require('mockery');
-var rewire = require('rewire');
-var dbMock = require('./mocks/db');
-var documentStoreMock = require('./mocks/documentStore');
-var sessionsMock = require('./mocks/sessions');
-var appHandler = rewire('../../lib/appHandler');
-var loadModuleSpec = require('./shared/loadModuleSpec');
+const events = require('events');
+const mockery = require('mockery');
+const rewire = require('rewire');
+const dbMock = require('./mocks/db');
+const documentStoreMock = require('./mocks/documentStore');
+const sessionsMock = require('./mocks/sessions');
+const appHandler = rewire('../../lib/appHandler');
+const loadModuleSpec = require('./shared/loadModuleSpec');
 
-describe('unit/appHandler:', function () {
-  var Worker;
-  var worker;
-  var db;
-  var documentStore;
-  var sessions;
-  var send;
-  var finished;
-  var handleJWT;
-  var getFragment;
-  var resilientMode;
-  var session;
+describe('unit/appHandler:', () => {
+  let Worker = null;
+  let worker = null;
+  let db = null;
+  let documentStore = null;
+  let sessions = null;
+  let send = null;
+  let finished = null;
+  let handleJWT = null;
+  let getFragment = null;
+  let resilientMode = null;
+  let session = null;
 
-  var revert = function (obj) {
+  const revert = (obj) => {
     obj.__revert__();
     delete obj.__revert__;
   };
+  const boot = (cb) => cb(appHandler, worker, send, finished, handleJWT, session);
 
-  var boot = function (cb) {
-    cb(appHandler, worker, send, finished, handleJWT, session);
-  };
-
-  beforeAll(function () {
+  beforeAll(() => {
     Worker = function () {
       this.userDefined = {};
       this.errorMessages = {};
@@ -50,11 +47,11 @@ describe('unit/appHandler:', function () {
     mockery.enable();
   });
 
-  afterAll(function () {
+  afterAll(() => {
     mockery.disable();
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     db = dbMock.mock();
 
     documentStore = documentStoreMock.mock();
@@ -88,14 +85,14 @@ describe('unit/appHandler:', function () {
     worker.userDefined.config = {};
   });
 
-  afterEach(function () {
+  afterEach(() => {
     revert(handleJWT);
     revert(resilientMode);
 
     mockery.deregisterAll();
   });
 
-  it('should add message event handler', function () {
+  it('should add message event handler', () => {
     spyOn(worker, 'on');
 
     appHandler.call(worker);
@@ -103,8 +100,8 @@ describe('unit/appHandler:', function () {
     expect(worker.on).toHaveBeenCalledWith('message', jasmine.any(Function));
   });
 
-  describe('resilientMode', function () {
-    beforeEach(function () {
+  describe('resilientMode', () => {
+    beforeEach(() => {
       session = {
         application: 'foo'
       };
@@ -114,8 +111,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should update worker status to started/error', function () {
-      var messageObj = {
+    it('should update worker status to started/error', () => {
+      const messageObj = {
         type: 'ewd-jwt-decode',
         params: {},
         dbIndex: '4'
@@ -138,8 +135,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should update worker status to started/finished', function () {
-      var messageObj = {
+    it('should update worker status to started/finished', () => {
+      const messageObj = {
         type: 'ewd-jwt-decode',
         params: {},
         dbIndex: '4'
@@ -163,13 +160,13 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('no documentStore defined', function () {
-    beforeEach(function () {
+  describe('no documentStore defined', () => {
+    beforeEach(() => {
       delete worker.documentStore;
     });
 
-    it('should finished with standard error', function () {
-      var messageObj = {};
+    it('should finished with standard error', () => {
+      const messageObj = {};
 
       appHandler.call(worker);
 
@@ -180,8 +177,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should finished with custom error (string)', function () {
-      var messageObj = {
+    it('should finished with custom error (string)', () => {
+      const messageObj = {
         application: 'foo'
       };
 
@@ -197,8 +194,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should finished with custom error (object)', function () {
-      var messageObj = {
+    it('should finished with custom error (object)', () => {
+      const messageObj = {
         application: 'foo'
       };
 
@@ -221,9 +218,9 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('ewd-jwt-decode', function () {
-    it('should handle message', function () {
-      var messageObj = {
+  describe('ewd-jwt-decode', () => {
+    it('should handle message', () => {
+      const messageObj = {
         type: 'ewd-jwt-decode',
         params: {
           jwt: 'jwtToken'
@@ -244,9 +241,9 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('ewd-jwt-encode', function () {
-    it('should handle message', function () {
-      var messageObj = {
+  describe('ewd-jwt-encode', () => {
+    it('should handle message', () => {
+      const messageObj = {
         type: 'ewd-jwt-encode',
         params: {
           payload: {
@@ -269,9 +266,9 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('ewd-jwt-updateExpiry', function () {
-    it('should handle message', function () {
-      var messageObj = {
+  describe('ewd-jwt-updateExpiry', () => {
+    it('should handle message', () => {
+      const messageObj = {
         type: 'ewd-jwt-updateExpiry',
         params: {
           jwt: 'jwtToken',
@@ -291,9 +288,9 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('ewd-jwt-isValid', function () {
-    it('should handle message', function () {
-      var messageObj = {
+  describe('ewd-jwt-isValid', () => {
+    it('should handle message', () => {
+      const messageObj = {
         type: 'ewd-jwt-isValid',
         params: {
           jwt: 'jwtToken'
@@ -314,11 +311,11 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('ewd-qoper8-express', function () {
-    var application = 'baz';
-    var messageObj;
+  describe('ewd-qoper8-express', () => {
+    const application = 'baz';
+    let messageObj = null;
 
-    beforeEach(function () {
+    beforeEach(() => {
       worker.restModule[application] = true;
 
       messageObj = {
@@ -329,19 +326,17 @@ describe('unit/appHandler:', function () {
 
     loadModuleSpec(mockery, boot, {
       moduleName: application,
-      onMessage: function () {
-        return messageObj;
-      },
-      onSuccess: function () {
+      onMessage: () => messageObj,
+      onSuccess: () => {
         expect(finished).toHaveBeenCalledWith({
           error: 'No handler defined for baz messages of type ewd-qoper8-express'
         });
       }
     });
 
-    describe('rest module', function () {
-      describe('no handler type', function () {
-        it('should finished with standard error', function () {
+    describe('rest module', () => {
+      describe('no handler type', () => {
+        it('should finished with standard error', () => {
           worker.handlers[messageObj.application] = {};
 
           appHandler.call(worker);
@@ -352,7 +347,7 @@ describe('unit/appHandler:', function () {
           });
         });
 
-        it('should finished with custom error (string)', function () {
+        it('should finished with custom error (string)', () => {
           worker.handlers[messageObj.application] = {};
 
           worker.errorMessages[messageObj.application] = {
@@ -367,7 +362,7 @@ describe('unit/appHandler:', function () {
           });
         });
 
-        it('should finished with custom error (object)', function () {
+        it('should finished with custom error (object)', () => {
           worker.handlers[messageObj.application] = {};
 
           worker.errorMessages[messageObj.application] = {
@@ -389,12 +384,10 @@ describe('unit/appHandler:', function () {
         });
       });
 
-      it('should call application handler', function () {
-        var appModule = {
+      it('should call application handler', () => {
+        const appModule = {
           handlers: {
-            'ewd-qoper8-express': jasmine.createSpy().and.callFake(function (messageObj, finalise) {
-              finalise();
-            })
+            'ewd-qoper8-express': jasmine.createSpy().and.callFake((messageObj, finalise) => finalise())
           }
         };
         mockery.registerMock(application, appModule);
@@ -409,14 +402,12 @@ describe('unit/appHandler:', function () {
         });
       });
 
-      describe('before handler', function () {
-        it('should run beforeHandler before handler', function () {
-          var appModule = {
+      describe('before handler', () => {
+        it('should run beforeHandler before handler', () => {
+          const appModule = {
             beforeHandler: jasmine.createSpy().and.returnValue(true),
             handlers: {
-              'ewd-qoper8-express': jasmine.createSpy().and.callFake(function (messageObj, finalise) {
-                finalise();
-              })
+              'ewd-qoper8-express': jasmine.createSpy().and.callFake((messageObj, finalise) => finalise())
             }
           };
           mockery.registerMock(application, appModule);
@@ -428,8 +419,8 @@ describe('unit/appHandler:', function () {
           expect(appModule.beforeHandler).toHaveBeenCalledWith(messageObj, jasmine.any(Function));
         });
 
-        it('should do not run handler', function () {
-          var appModule = {
+        it('should do not run handler', () => {
+          const appModule = {
             beforeHandler: jasmine.createSpy().and.returnValue(false),
             handlers: {
               'ewd-qoper8-express': jasmine.createSpy()
@@ -445,14 +436,12 @@ describe('unit/appHandler:', function () {
         });
       });
 
-      describe('after handler', function () {
-        it('should run afterHandler after handler', function () {
-          var appModule = {
+      describe('after handler', () => {
+        it('should run afterHandler after handler', () => {
+          const appModule = {
             afterHandler: jasmine.createSpy(),
             handlers: {
-              'ewd-qoper8-express': jasmine.createSpy().and.callFake(function (messageObj, finalise) {
-                finalise();
-              })
+              'ewd-qoper8-express': jasmine.createSpy().and.callFake((messageObj, finalise) => finalise())
             }
           };
           mockery.registerMock(application, appModule);
@@ -465,12 +454,10 @@ describe('unit/appHandler:', function () {
         });
       });
 
-      it('should set jwt handlers', function () {
-        var appModule = {
+      it('should set jwt handlers', () => {
+        const appModule = {
           handlers: {
-            'ewd-qoper8-express': jasmine.createSpy().and.callFake(function (messageObj, finalise) {
-              finalise();
-            })
+            'ewd-qoper8-express': jasmine.createSpy().and.callFake((messageObj, finalise) => finalise())
           }
         };
         mockery.registerMock(application, appModule);
@@ -484,8 +471,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    describe('ajax', function () {
-      it('should handle ajax message', function () {
+    describe('ajax', () => {
+      it('should handle ajax message', () => {
         messageObj = {
           type: 'ewd-qoper8-express',
           ip: '127.0.0.1',
@@ -499,7 +486,7 @@ describe('unit/appHandler:', function () {
           }
         };
 
-        var appModule = {
+        const appModule = {
           restModule: true,
           handlers: {
             baz: jasmine.createSpy()
@@ -518,7 +505,7 @@ describe('unit/appHandler:', function () {
         }, jasmine.any(Function));
       });
 
-      it('should handle message with ewd-register type in body', function () {
+      it('should handle message with ewd-register type in body', () => {
         messageObj = {
           type: 'ewd-qoper8-express',
           ip: '192.168.1.13',
@@ -550,8 +537,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    describe('express type', function () {
-      it('should replace type to expressType', function () {
+    describe('express type', () => {
+      it('should replace type to expressType', () => {
         messageObj = {
           type: 'ewd-qoper8-express',
           expressType: 'ewd-bar',
@@ -578,9 +565,9 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('ewd-register', function () {
-    it('should handle message with jwt token', function () {
-      var messageObj = {
+  describe('ewd-register', () => {
+    it('should handle message with jwt token', () => {
+      const messageObj = {
         type: 'ewd-register',
         jwt: 'jwtToken'
       };
@@ -594,12 +581,12 @@ describe('unit/appHandler:', function () {
       expect(finished).toHaveBeenCalledWith('foobar');
     });
 
-    it('should handle message without jwt token', function () {
-      var messageObj = {
+    it('should handle message without jwt token', () => {
+      const messageObj = {
         type: 'ewd-register',
         application: 'foo'
       };
-      var session = {
+      const session = {
         token: 'baz'
       };
 
@@ -619,14 +606,14 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should handle message without jwt token but with additional props', function () {
-      var messageObj = {
+    it('should handle message without jwt token but with additional props', () => {
+      const messageObj = {
         type: 'ewd-register',
         application: 'foo',
         socketId: '/#yf_vd-S9Q7e-LX28AAAS',
         ipAddress: '127.0.0.1'
       };
-      var session = {
+      const session = {
         token: 'baz'
       };
 
@@ -642,9 +629,9 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('auth', function () {
-    it('should return error when jwt is invalid', function () {
-      var messageObj = {
+  describe('auth', () => {
+    it('should return error when jwt is invalid', () => {
+      const messageObj = {
         type: '*',
         jwt: 'invalid-jwt'
       };
@@ -663,13 +650,13 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should authenticate with jwt', function () {
-      var messageObj = {
+    it('should authenticate with jwt', () => {
+      const messageObj = {
         type: '*',
         jwt: 'jwtToken'
       };
 
-      var result = {
+      const result = {
         session: {
           application: 'foo'
         }
@@ -687,8 +674,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should return error when session token is invalid', function () {
-      var messageObj = {
+    it('should return error when session token is invalid', () => {
+      const messageObj = {
         type: '*',
         token: 'invalid-token'
       };
@@ -707,13 +694,13 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should authenticate with session token', function () {
-      var messageObj = {
+    it('should authenticate with session token', () => {
+      const messageObj = {
         type: '*',
         token: 'tokenValue'
       };
 
-      var result = {
+      const result = {
         session: {
           application: 'foo',
           updateExpiry: jasmine.createSpy()
@@ -733,14 +720,14 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should return custom error (string)', function () {
-      var messageObj = {
+    it('should return custom error (string)', () => {
+      const messageObj = {
         type: '*',
         token: 'invalid-token',
         application: 'foo'
       };
 
-      var result = {
+      const result = {
         error: 'token is invalid'
       };
       sessions.authenticate.and.returnValue(result);
@@ -759,15 +746,15 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('ewd-reregister', function () {
-    beforeEach(function () {
+  describe('ewd-reregister', () => {
+    beforeEach(() => {
       session = {
         socketId: 'socket-id'
       };
     });
 
-    it('should handle message with jwt', function () {
-      var messageObj = {
+    it('should handle message with jwt', () => {
+      const messageObj = {
         type: 'ewd-reregister',
         jwt: 'jwtToken'
       };
@@ -776,7 +763,7 @@ describe('unit/appHandler:', function () {
         session: session
       });
 
-      var result = {
+      const result = {
         ok: true,
         token: 'tokenValue'
       };
@@ -793,8 +780,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should handle message with session token', function () {
-      var messageObj = {
+    it('should handle message with session token', () => {
+      const messageObj = {
         type: 'ewd-reregister',
         token: 'tokenValue',
         socketId: 'updated-socket-id'
@@ -815,8 +802,8 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('ewd-fragment', function () {
-    beforeEach(function () {
+  describe('ewd-fragment', () => {
+    beforeEach(() => {
       session = {
         application: 'foo'
       };
@@ -826,13 +813,13 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should handle message with jwt', function () {
-      var messageObj = {
+    it('should handle message with jwt', () => {
+      const messageObj = {
         type: 'ewd-fragment',
         jwt: 'jwtToken'
       };
 
-      var result = {
+      const result = {
         session: {
           application: 'foo'
         }
@@ -846,13 +833,13 @@ describe('unit/appHandler:', function () {
       expect(getFragment).toHaveBeenCalledWith(messageObj, 'foo', finished);
     });
 
-    it('should handle message with session token', function () {
-      var messageObj = {
+    it('should handle message with session token', () => {
+      const messageObj = {
         type: 'ewd-fragment',
         token: 'tokenValue'
       };
 
-      var result = {
+      const result = {
         session: {
           application: 'foo',
           updateExpiry: jasmine.createSpy()
@@ -868,10 +855,10 @@ describe('unit/appHandler:', function () {
       expect(getFragment).toHaveBeenCalledWith(messageObj, 'foo', finished);
     });
 
-    describe('should handle message with service prop', function () {
-      var messageObj;
+    describe('should handle message with service prop', () => {
+      let messageObj = null;
 
-      beforeEach(function () {
+      beforeEach(() => {
         messageObj = {
           type: 'ewd-fragment',
           jwt: 'jwtToken',
@@ -881,23 +868,21 @@ describe('unit/appHandler:', function () {
 
       loadModuleSpec(mockery, boot, {
         moduleName: 'foo',
-        onMessage: function () {
-          return messageObj;
-        },
-        onSuccess: function () {
+        onMessage: () => messageObj,
+        onSuccess: () => {
           expect(getFragment).toHaveBeenCalledWith(messageObj, session.application, finished);
         },
-        onError: function () {
+        onError: () => {
           expect(getFragment).not.toHaveBeenCalled();
         }
       });
     });
   });
 
-  describe('application handler', function () {
-    var messageObj;
+  describe('application handler', () => {
+    let messageObj = null;
 
-    beforeEach(function () {
+    beforeEach(() => {
       messageObj = {
         type: '*',
         jwt: 'jwtToken'
@@ -914,10 +899,8 @@ describe('unit/appHandler:', function () {
 
     loadModuleSpec(mockery, boot, {
       moduleName: 'foo',
-      onMessage: function () {
-        return messageObj;
-      },
-      onSuccess: function () {
+      onMessage: () => messageObj,
+      onSuccess: () => {
         expect(finished).toHaveBeenCalledWith({
           error: 'No handler defined for foo messages of type *'
         });
@@ -925,8 +908,8 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('session locking', function () {
-    beforeEach(function () {
+  describe('session locking', () => {
+    beforeEach(() => {
       session = {
         id: 'baz',
         application: 'foo'
@@ -937,8 +920,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should return error when session timed out', function () {
-      var messageObj = {
+    it('should return error when session timed out', () => {
+      const messageObj = {
         type: '*',
         jwt: 'jwtToken'
       };
@@ -947,7 +930,7 @@ describe('unit/appHandler:', function () {
         result: '0'
       });
 
-      var appModule = {};
+      const appModule = {};
       mockery.registerMock('foo', appModule);
 
       worker.userDefined.config = {
@@ -967,8 +950,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should use custom session timeout value', function () {
-      var messageObj = {
+    it('should use custom session timeout value', () => {
+      const messageObj = {
         type: '*',
         jwt: 'jwtToken'
       };
@@ -977,7 +960,7 @@ describe('unit/appHandler:', function () {
         result: '0'
       });
 
-      var appModule = {};
+      const appModule = {};
       mockery.registerMock('foo', appModule);
 
       worker.userDefined.config = {
@@ -996,8 +979,8 @@ describe('unit/appHandler:', function () {
       }, 50);
     });
 
-    it('should pass session locking', function () {
-      var messageObj = {
+    it('should pass session locking', () => {
+      const messageObj = {
         type: '*',
         jwt: 'jwtToken'
       };
@@ -1006,7 +989,7 @@ describe('unit/appHandler:', function () {
         result: '1'
       });
 
-      var appModule = {};
+      const appModule = {};
       mockery.registerMock('foo', appModule);
 
       worker.userDefined.config = {
@@ -1025,12 +1008,12 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('service request', function () {
-    var session;
-    var application = 'foo';
-    var service = 'baz';
+  describe('service request', () => {
+    let session = null;
+    const application = 'foo';
+    const service = 'baz';
 
-    beforeEach(function () {
+    beforeEach(() => {
       session = {
         application: application,
         allowedServices: {}
@@ -1045,13 +1028,13 @@ describe('unit/appHandler:', function () {
       session.allowedServices[service] = true;
     });
 
-    describe('service not allowed error', function () {
-      beforeEach(function () {
+    describe('service not allowed error', () => {
+      beforeEach(() => {
         delete session.allowedServices[service];
       });
 
-      it('should finished with standard error', function () {
-        var messageObj = {
+      it('should finished with standard error', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
@@ -1066,8 +1049,8 @@ describe('unit/appHandler:', function () {
         });
       });
 
-      it('should finished with custom error (string)', function () {
-        var messageObj = {
+      it('should finished with custom error (string)', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
@@ -1087,13 +1070,13 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    describe('service not allowed error for user', function () {
-      beforeEach(function () {
+    describe('service not allowed error for user', () => {
+      beforeEach(() => {
         session.allowedServices[service] = false;
       });
 
-      it('should finished with standard error', function () {
-        var messageObj = {
+      it('should finished with standard error', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
@@ -1108,8 +1091,8 @@ describe('unit/appHandler:', function () {
         });
       });
 
-      it('should finished with custom error (string)', function () {
-        var messageObj = {
+      it('should finished with custom error (string)', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
@@ -1129,10 +1112,10 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    describe('service handler', function () {
-      var messageObj;
+    describe('service handler', () => {
+      let messageObj = null;
 
-      beforeEach(function () {
+      beforeEach(() => {
         messageObj = {
           type: 'bar',
           service: service,
@@ -1144,15 +1127,13 @@ describe('unit/appHandler:', function () {
 
       loadModuleSpec(mockery, boot, {
         moduleName: service,
-        onMessage: function () {
-          return messageObj;
-        }
+        onMessage: () => messageObj
       });
     });
 
-    describe('no service module type', function () {
-      it('should finished with standard error', function () {
-        var messageObj = {
+    describe('no service module type', () => {
+      it('should finished with standard error', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
@@ -1167,8 +1148,8 @@ describe('unit/appHandler:', function () {
         });
       });
 
-      it('should finished with custom error (string)', function () {
-        var messageObj = {
+      it('should finished with custom error (string)', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
@@ -1188,14 +1169,14 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should call service handler', function () {
-      var messageObj = {
+    it('should call service handler', () => {
+      const messageObj = {
         type: 'bar',
         service: service,
         jwt: 'jwtToken'
       };
 
-      var handler = jasmine.createSpy();
+      const handler = jasmine.createSpy();
       worker.handlers[service][messageObj.type] = handler;
 
       appHandler.call(worker);
@@ -1204,18 +1185,18 @@ describe('unit/appHandler:', function () {
       expect(handler).toHaveBeenCalledWith(messageObj, session, send, finished);
     });
 
-    describe('before handler', function () {
-      it('should run beforeHandler before handler', function () {
-        var messageObj = {
+    describe('before handler', () => {
+      it('should run beforeHandler before handler', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
         };
 
-        var handler = jasmine.createSpy();
+        const handler = jasmine.createSpy();
         worker.handlers[service][messageObj.type] = handler;
 
-        var beforeHandler = jasmine.createSpy();
+        const beforeHandler = jasmine.createSpy();
         worker.beforeHandlers[service] = beforeHandler;
 
         appHandler.call(worker);
@@ -1225,17 +1206,17 @@ describe('unit/appHandler:', function () {
         expect(beforeHandler).toHaveBeenCalledWith(messageObj, session, send, jasmine.any(Function));
       });
 
-      it('should do not run handler', function () {
-        var messageObj = {
+      it('should do not run handler', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
         };
 
-        var handler = jasmine.createSpy();
+        const handler = jasmine.createSpy();
         worker.handlers[service][messageObj.type] = handler;
 
-        var beforeHandler = jasmine.createSpy().and.returnValue(false);
+        const beforeHandler = jasmine.createSpy().and.returnValue(false);
         worker.beforeHandlers[service] = beforeHandler;
 
         appHandler.call(worker);
@@ -1245,18 +1226,18 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    describe('after handler', function () {
-      it('should run afterHandler after handler', function () {
-        var messageObj = {
+    describe('after handler', () => {
+      it('should run afterHandler after handler', () => {
+        const messageObj = {
           type: 'bar',
           service: service,
           jwt: 'jwtToken'
         };
 
-        var handler = jasmine.createSpy();
+        const handler = jasmine.createSpy();
         worker.handlers[service][messageObj.type] = handler;
 
-        var afterHandler = jasmine.createSpy();
+        const afterHandler = jasmine.createSpy();
         worker.afterHandlers[service] = afterHandler;
 
         appHandler.call(worker);
@@ -1268,10 +1249,10 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('application request', function () {
-    var session;
+  describe('application request', () => {
+    let session = null;
 
-    beforeEach(function () {
+    beforeEach(() => {
       session = {
         application: 'foo'
       };
@@ -1281,19 +1262,17 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should call application handler', function () {
-      var messageObj = {
+    it('should call application handler', () => {
+      const messageObj = {
         type: 'baz',
         jwt: 'jwtToken'
       };
 
       handleJWT.updateJWT.and.returnValue('newJwtToken');
 
-      var appModule = {
+      const appModule = {
         handlers: {
-          baz: jasmine.createSpy().and.callFake(function (messageObj, session, send, finalise) {
-            finalise();
-          })
+          baz: jasmine.createSpy().and.callFake((messageObj, session, send, finalise) => finalise())
         }
       };
       mockery.registerMock('foo', appModule);
@@ -1309,19 +1288,15 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should call application handler and handle error', function () {
-      var messageObj = {
+    it('should call application handler and handle error', () => {
+      const messageObj = {
         type: 'baz',
         jwt: 'jwtToken'
       };
 
-      var appModule = {
+      const appModule = {
         handlers: {
-          baz: jasmine.createSpy().and.callFake(function (messageObj, session, send, finalise) {
-            finalise({
-              error: 'update jwt error'
-            });
-          })
+          baz: jasmine.createSpy().and.callFake((messageObj, session, send, finalise) => finalise({error: 'update jwt error'}))
         }
       };
       mockery.registerMock('foo', appModule);
@@ -1337,21 +1312,19 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    describe('before handler', function () {
-      it('should run beforeHandler before handler', function () {
-        var messageObj = {
+    describe('before handler', () => {
+      it('should run beforeHandler before handler', () => {
+        const messageObj = {
           type: 'baz',
           jwt: 'jwtToken'
         };
 
         handleJWT.updateJWT.and.returnValue('newJwtToken');
 
-        var appModule = {
+        const appModule = {
           beforeHandler: jasmine.createSpy().and.returnValue(true),
           handlers: {
-            baz: jasmine.createSpy().and.callFake(function (messageObj, session, send, finalise) {
-              finalise();
-            })
+            baz: jasmine.createSpy().and.callFake((messageObj, session, send, finalise) => finalise())
           }
         };
         mockery.registerMock('foo', appModule);
@@ -1363,13 +1336,13 @@ describe('unit/appHandler:', function () {
         expect(appModule.beforeHandler).toHaveBeenCalledWith(messageObj, session, send, jasmine.any(Function));
       });
 
-      it('should do not run handler', function () {
-        var messageObj = {
+      it('should do not run handler', () => {
+        const messageObj = {
           type: 'baz',
           jwt: 'jwtToken'
         };
 
-        var appModule = {
+        const appModule = {
           beforeHandler: jasmine.createSpy().and.returnValue(false),
           handlers: {
             baz: jasmine.createSpy()
@@ -1385,21 +1358,19 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    describe('after handler', function () {
-      it('should run afterHandler after handler', function () {
-        var messageObj = {
+    describe('after handler', () => {
+      it('should run afterHandler after handler', () => {
+        const messageObj = {
           type: 'baz',
           jwt: 'jwtToken'
         };
 
         handleJWT.updateJWT.and.returnValue('newJwtToken');
 
-        var appModule = {
+        const appModule = {
           afterHandler: jasmine.createSpy(),
           handlers: {
-            baz: jasmine.createSpy().and.callFake(function (messageObj, session, send, finalise) {
-              finalise();
-            })
+            baz: jasmine.createSpy().and.callFake((messageObj, session, send, finalise) => finalise())
           }
         };
         mockery.registerMock('foo', appModule);
@@ -1412,19 +1383,17 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should set jwt handlers', function () {
-      var messageObj = {
+    it('should set jwt handlers', () => {
+      const messageObj = {
         type: 'baz',
         jwt: 'jwtToken'
       };
 
       handleJWT.updateJWT.and.returnValue('newJwtToken');
 
-      var appModule = {
+      const appModule = {
         handlers: {
-          baz: jasmine.createSpy().and.callFake(function (messageObj, session, send, finalise) {
-            finalise();
-          })
+          baz: jasmine.createSpy().and.callFake((messageObj, session, send, finalise) => finalise())
         }
       };
       mockery.registerMock('foo', appModule);
@@ -1438,23 +1407,23 @@ describe('unit/appHandler:', function () {
     });
   });
 
-  describe('no type handler', function () {
-    var application = 'foo';
+  describe('no type handler', () => {
+    const application = 'foo';
 
-    beforeEach(function () {
-      var result = {
+    beforeEach(() => {
+      const result = {
         session: {
           application: application
         }
       };
       handleJWT.validate.and.returnValue(result);
 
-      var appModule = {};
+      const appModule = {};
       mockery.registerMock('foo', appModule);
     });
 
-    it('should finished with standard error', function () {
-      var messageObj = {
+    it('should finished with standard error', () => {
+      const messageObj = {
         type: '*',
         jwt: 'jwtToken'
       };
@@ -1467,8 +1436,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should finished with custom error (string)', function () {
-      var messageObj = {
+    it('should finished with custom error (string)', () => {
+      const messageObj = {
         type: '*',
         jwt: 'jwtToken'
       };
@@ -1485,8 +1454,8 @@ describe('unit/appHandler:', function () {
       });
     });
 
-    it('should finished with custom error (object)', function () {
-      var messageObj = {
+    it('should finished with custom error (object)', () => {
+      const messageObj = {
         type: '*',
         jwt: 'jwtToken'
       };

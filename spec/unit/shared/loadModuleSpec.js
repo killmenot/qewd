@@ -1,23 +1,23 @@
 'use strict';
 
 module.exports = function (mockery, boot, config) {
-  var noop = function () {};
-  var moduleName = config.moduleName;
-  var onMessage = config.onMessage || noop;
-  var onSuccess = config.onSuccess || noop;
-  var onError = config.onError || noop;
+  const noop = function () {};
+  const moduleName = config.moduleName;
+  const onMessage = config.onMessage || noop;
+  const onSuccess = config.onSuccess || noop;
+  const onError = config.onError || noop;
 
-  describe('load module', function () {
-    var appHandler;
-    var worker;
-    var messageObj;
-    var send;
-    var finished;
-    var handleJWT;
-    var session;
+  describe('load module', () => {
+    let appHandler = null;
+    let worker = null;
+    let messageObj = null;
+    let send = null;
+    let finished = null;
+    let handleJWT = null;
+    let session = null;
 
-    beforeEach(function (done) {
-      boot(function (_appHandler, _worker, _send, _finished, _handleJWT, _session) {
+    beforeEach((done) => {
+      boot((_appHandler, _worker, _send, _finished, _handleJWT, _session) => {
         appHandler = _appHandler;
         worker = _worker;
         messageObj = onMessage();
@@ -30,7 +30,7 @@ module.exports = function (mockery, boot, config) {
       });
     });
 
-    it('should return error when unable to load handler module', function () {
+    it('should return error when unable to load handler module', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
@@ -42,7 +42,7 @@ module.exports = function (mockery, boot, config) {
       onError();
     });
 
-    it('should return custom error when unable to load handler module', function () {
+    it('should return custom error when unable to load handler module', () => {
       worker.errorMessages[moduleName] = {
         'moduleLoadError': 'Module load error - custom error'
       };
@@ -58,8 +58,8 @@ module.exports = function (mockery, boot, config) {
       onError();
     });
 
-    it('should be able to load app module', function () {
-      var appModule = {};
+    it('should be able to load app module', () => {
+      const appModule = {};
       mockery.registerMock(moduleName, appModule);
 
       appHandler.call(worker);
@@ -68,11 +68,11 @@ module.exports = function (mockery, boot, config) {
       onSuccess();
     });
 
-    it('should be able to load app module via moduleMap', function () {
+    it('should be able to load app module via moduleMap', () => {
       worker.userDefined.config.moduleMap = {};
       worker.userDefined.config.moduleMap[moduleName] = 'bar';
 
-      var appModule = {};
+      const appModule = {};
       mockery.registerMock('bar', appModule);
 
       appHandler.call(worker);
@@ -81,8 +81,8 @@ module.exports = function (mockery, boot, config) {
       onSuccess();
     });
 
-    it('should be able to set handlers for application', function () {
-      var appModule = {
+    it('should be able to set handlers for application', () => {
+      const appModule = {
         handlers: {
           baz: jasmine.createSpy()
         }
@@ -95,8 +95,8 @@ module.exports = function (mockery, boot, config) {
       expect(worker.handlers[moduleName]).toBe(appModule.handlers);
     });
 
-    it('should be able to set beforeHandler for application', function () {
-      var appModule = {
+    it('should be able to set beforeHandler for application', () => {
+      const appModule = {
         beforeHandler: jasmine.createSpy()
       };
       mockery.registerMock(moduleName, appModule);
@@ -107,8 +107,8 @@ module.exports = function (mockery, boot, config) {
       expect(worker.beforeHandlers[moduleName]).toBe(appModule.beforeHandler);
     });
 
-    it('should be able to set beforeHandler for application when beforeMicroServiceHandler passed', function () {
-      var appModule = {
+    it('should be able to set beforeHandler for application when beforeMicroServiceHandler passed', () => {
+      const appModule = {
         beforeMicroServiceHandler: jasmine.createSpy().and.returnValue(true)
       };
       mockery.registerMock(moduleName, appModule);
@@ -116,20 +116,20 @@ module.exports = function (mockery, boot, config) {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      var messageObj2 = {
+      const messageObj2 = {
         baz: 'foobar'
       };
-      var session2 = {};
-      var send2 = jasmine.createSpy();
-      var finished2 = jasmine.createSpy();
-      var actual = worker.beforeHandlers[moduleName](messageObj2, session2, send2, finished2);
+      const session2 = {};
+      const send2 = jasmine.createSpy();
+      const finished2 = jasmine.createSpy();
+      const actual = worker.beforeHandlers[moduleName](messageObj2, session2, send2, finished2);
 
       expect(appModule.beforeMicroServiceHandler).toHaveBeenCalledWith(messageObj2, finished2);
       expect(actual).toBeTruthy();
     });
 
-    it('should be able to set afterHandler for application', function () {
-      var appModule = {
+    it('should be able to set afterHandler for application', () => {
+      const appModule = {
         afterHandler: jasmine.createSpy()
       };
       mockery.registerMock(moduleName, appModule);
@@ -140,8 +140,8 @@ module.exports = function (mockery, boot, config) {
       expect(worker.afterHandlers[moduleName]).toBe(appModule.afterHandler);
     });
 
-    it('should be able to set servicesAllowed for application', function () {
-      var appModule = {
+    it('should be able to set servicesAllowed for application', () => {
+      const appModule = {
         servicesAllowed: true
       };
       mockery.registerMock(moduleName, appModule);
@@ -152,8 +152,8 @@ module.exports = function (mockery, boot, config) {
       expect(worker.servicesAllowed[moduleName]).toBe(appModule.servicesAllowed);
     });
 
-    it('should be able to set restModule for application', function () {
-      var appModule = {
+    it('should be able to set restModule for application', () => {
+      const appModule = {
         restModule: true
       };
       mockery.registerMock(moduleName, appModule);
@@ -164,8 +164,8 @@ module.exports = function (mockery, boot, config) {
       expect(worker.restModule[moduleName]).toBe(appModule.restModule);
     });
 
-    it('should be able to call init for application', function () {
-      var appModule = {
+    it('should be able to call init for application', () => {
+      const appModule = {
         init: jasmine.createSpy()
       };
       mockery.registerMock(moduleName, appModule);

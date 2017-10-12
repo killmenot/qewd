@@ -1,10 +1,8 @@
 'use strict';
 
 module.exports = {
-  mock: function () {
-    var documentStore = {
-
-    };
+  mock: () => {
+    const documentStore = {};
 
     return documentStore;
   }
