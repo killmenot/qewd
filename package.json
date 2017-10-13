@@ -68,6 +68,7 @@
     "coveralls": "^3.0.0",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.1.1",
+    "jasmine-spy-matchers": "^1.0.0",
     "jshint": "^2.9.5",
     "mockery": "^2.1.0",
     "nyc": "^11.1.0",
