@@ -26,7 +26,7 @@ describe('unit/appHandler:', () => {
     obj.__revert__();
     delete obj.__revert__;
   };
-  const boot = (cb) => cb(appHandler, worker, send, finished, handleJWT, session);
+  const boot = (cb) => cb(appHandler, worker, send, finished);
 
   beforeAll(() => {
     Worker = function () {

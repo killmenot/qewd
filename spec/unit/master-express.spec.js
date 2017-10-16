@@ -96,8 +96,6 @@ describe('unit/master-express:', () => {
 
     wsConfig(config, routes, q, qx);
 
-    express.static(config.webServerRootPath);
-
     expect(express.static).toHaveBeenCalledWith('/var/www/domain.com');
     expect(app.use).toHaveBeenCalledWith('/', fn);
   });

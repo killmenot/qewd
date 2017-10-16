@@ -13,18 +13,14 @@ module.exports = function (mockery, boot, config) {
     let messageObj = null;
     let send = null;
     let finished = null;
-    let handleJWT = null;
-    let session = null;
 
     beforeEach((done) => {
-      boot((_appHandler, _worker, _send, _finished, _handleJWT, _session) => {
+      boot((_appHandler, _worker, _send, _finished) => {
         appHandler = _appHandler;
         worker = _worker;
         messageObj = onMessage();
         send = _send;
         finished = _finished;
-        handleJWT = _handleJWT;
-        session = _session;
 
         done();
       });
