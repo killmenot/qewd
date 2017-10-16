@@ -128,8 +128,10 @@ describe('unit/appHandler:', () => {
       worker.emit('message', messageObj, send, finished);
 
       expect(resilientMode.storeWorkerStatusUpdate).toHaveBeenCalledTimes(2);
-      expect(resilientMode.storeWorkerStatusUpdate.calls.argsFor(0)).toEqual([messageObj, 'started']);
-      expect(resilientMode.storeWorkerStatusUpdate.calls.argsFor(1)).toEqual([messageObj, 'error']);
+      expect(resilientMode.storeWorkerStatusUpdate).toHaveBeenCalledWithContext(worker, messageObj, 'started');
+      expect(resilientMode.storeWorkerStatusUpdate.calls.argsFor(0)).toEqual(jasmine.arrayContaining(['started']));
+      expect(resilientMode.storeWorkerStatusUpdate).toHaveBeenCalledWithContext(worker, messageObj, 'error');
+      expect(resilientMode.storeWorkerStatusUpdate.calls.argsFor(1)).toEqual(jasmine.arrayContaining(['error']));
       expect(finished).toHaveBeenCalledWith({
         error: 'decodeJWT internal error'
       });
@@ -152,8 +154,10 @@ describe('unit/appHandler:', () => {
       worker.emit('message', messageObj, send, finished);
 
       expect(resilientMode.storeWorkerStatusUpdate).toHaveBeenCalledTimes(2);
-      expect(resilientMode.storeWorkerStatusUpdate.calls.argsFor(0)).toEqual([messageObj, 'started']);
-      expect(resilientMode.storeWorkerStatusUpdate.calls.argsFor(1)).toEqual([messageObj, 'finished']);
+      expect(resilientMode.storeWorkerStatusUpdate).toHaveBeenCalledWithContext(worker, messageObj, 'started');
+      expect(resilientMode.storeWorkerStatusUpdate.calls.argsFor(0)).toEqual(jasmine.arrayContaining(['started']));
+      expect(resilientMode.storeWorkerStatusUpdate).toHaveBeenCalledWithContext(worker, messageObj, 'started');
+      expect(resilientMode.storeWorkerStatusUpdate.calls.argsFor(1)).toEqual(jasmine.arrayContaining(['finished']));
       expect(finished).toHaveBeenCalledWith({
         foo: 'bar'
       });
@@ -234,7 +238,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.decodeJWT).toHaveBeenCalledWith('jwtToken');
+      expect(handleJWT.decodeJWT).toHaveBeenCalledWithContext(worker, 'jwtToken');
       expect(finished).toHaveBeenCalledWith({
         foo: 'bar'
       });
@@ -257,7 +261,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.encodeJWT).toHaveBeenCalledWith({
+      expect(handleJWT.encodeJWT).toHaveBeenCalledWithContext(worker, {
         bar: 'baz'
       });
       expect(finished).toHaveBeenCalledWith({
@@ -281,7 +285,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.updateJWTExpiry).toHaveBeenCalledWith('jwtToken', 'foo');
+      expect(handleJWT.updateJWTExpiry).toHaveBeenCalledWithContext(worker, 'jwtToken', 'foo');
       expect(finished).toHaveBeenCalledWith({
         jwt: 'jwtTokenUpdated'
       });
@@ -304,7 +308,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.isJWTValid).toHaveBeenCalledWith('jwtToken');
+      expect(handleJWT.isJWTValid).toHaveBeenCalledWithContext(worker, 'jwtToken');
       expect(finished).toHaveBeenCalledWith({
         ok: true
       });
@@ -395,7 +399,7 @@ describe('unit/appHandler:', () => {
         appHandler.call(worker);
         worker.emit('message', messageObj, send, finished);
 
-        expect(appModule.handlers[messageObj.type]).toHaveBeenCalledWith(messageObj, jasmine.any(Function));
+        expect(appModule.handlers[messageObj.type]).toHaveBeenCalledWithContext(worker, messageObj, jasmine.any(Function));
         expect(finished).toHaveBeenCalledWith({
           ewd_application: 'baz',
           restMessage: true
@@ -416,7 +420,7 @@ describe('unit/appHandler:', () => {
           worker.emit('message', messageObj, send, finished);
 
           expect(appModule.beforeHandler).toHaveBeenCalledBefore(appModule.handlers[messageObj.type]);
-          expect(appModule.beforeHandler).toHaveBeenCalledWith(messageObj, jasmine.any(Function));
+          expect(appModule.beforeHandler).toHaveBeenCalledWithContext(worker, messageObj, jasmine.any(Function));
         });
 
         it('should do not run handler', () => {
@@ -450,7 +454,7 @@ describe('unit/appHandler:', () => {
           worker.emit('message', messageObj, send, finished);
 
           expect(appModule.handlers[messageObj.type]).toHaveBeenCalledBefore(appModule.afterHandler);
-          expect(appModule.afterHandler).toHaveBeenCalledWith(messageObj, jasmine.any(Function));
+          expect(appModule.afterHandler).toHaveBeenCalledWithContext(worker, messageObj, jasmine.any(Function));
         });
       });
 
@@ -577,7 +581,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.register).toHaveBeenCalledWith(messageObj);
+      expect(handleJWT.register).toHaveBeenCalledWithContext(worker, messageObj);
       expect(finished).toHaveBeenCalledWith('foobar');
     });
 
@@ -643,7 +647,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.validate).toHaveBeenCalledWith(messageObj);
+      expect(handleJWT.validate).toHaveBeenCalledWithContext(worker, messageObj);
       expect(finished).toHaveBeenCalledWith({
         error: 'jwt is invalid',
         disconnect: true
@@ -668,7 +672,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.validate).toHaveBeenCalledWith(messageObj);
+      expect(handleJWT.validate).toHaveBeenCalledWithContext(worker, messageObj);
       expect(finished).toHaveBeenCalledWith({
         error: 'No handler defined for foo messages of type *'
       });
@@ -772,8 +776,8 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.validate).toHaveBeenCalledWith(messageObj);
-      expect(handleJWT.reregister).toHaveBeenCalledWith(session, messageObj);
+      expect(handleJWT.validate).toHaveBeenCalledWithContext(worker, messageObj);
+      expect(handleJWT.reregister).toHaveBeenCalledWithContext(worker, session, messageObj);
       expect(finished).toHaveBeenCalledWith({
         ok: true,
         token: 'tokenValue'
@@ -829,8 +833,8 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handleJWT.validate).toHaveBeenCalledWith(messageObj);
-      expect(getFragment).toHaveBeenCalledWith(messageObj, 'foo', finished);
+      expect(handleJWT.validate).toHaveBeenCalledWithContext(worker, messageObj);
+      expect(getFragment).toHaveBeenCalledWithContext(worker, messageObj, 'foo', finished);
     });
 
     it('should handle message with session token', () => {
@@ -852,7 +856,7 @@ describe('unit/appHandler:', () => {
 
       expect(sessions.authenticate).toHaveBeenCalledWith('tokenValue', 'noCheck');
       expect(result.session.updateExpiry).toHaveBeenCalled();
-      expect(getFragment).toHaveBeenCalledWith(messageObj, 'foo', finished);
+      expect(getFragment).toHaveBeenCalledWithContext(worker, messageObj, 'foo', finished);
     });
 
     describe('should handle message with service prop', () => {
@@ -870,7 +874,7 @@ describe('unit/appHandler:', () => {
         moduleName: 'foo',
         onMessage: () => messageObj,
         onSuccess: () => {
-          expect(getFragment).toHaveBeenCalledWith(messageObj, session.application, finished);
+          expect(getFragment).toHaveBeenCalledWithContext(worker, messageObj, session.application, finished);
         },
         onError: () => {
           expect(getFragment).not.toHaveBeenCalled();
@@ -1182,7 +1186,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(handler).toHaveBeenCalledWith(messageObj, session, send, finished);
+      expect(handler).toHaveBeenCalledWithContext(worker, messageObj, session, send, finished);
     });
 
     describe('before handler', () => {
@@ -1203,7 +1207,7 @@ describe('unit/appHandler:', () => {
         worker.emit('message', messageObj, send, finished);
 
         expect(beforeHandler).toHaveBeenCalledBefore(handler);
-        expect(beforeHandler).toHaveBeenCalledWith(messageObj, session, send, jasmine.any(Function));
+        expect(beforeHandler).toHaveBeenCalledWithContext(worker, messageObj, session, send, jasmine.any(Function));
       });
 
       it('should do not run handler', () => {
@@ -1244,7 +1248,7 @@ describe('unit/appHandler:', () => {
         worker.emit('message', messageObj, send, finished);
 
         expect(handler).toHaveBeenCalledBefore(afterHandler);
-        expect(afterHandler).toHaveBeenCalledWith(messageObj, session, send, jasmine.any(Function));
+        expect(afterHandler).toHaveBeenCalledWithContext(worker, messageObj, session, send, jasmine.any(Function));
       });
     });
   });
@@ -1280,8 +1284,8 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(appModule.handlers.baz).toHaveBeenCalledWith(messageObj, session, send, jasmine.any(Function));
-      expect(handleJWT.updateJWT).toHaveBeenCalledWith(session);
+      expect(appModule.handlers.baz).toHaveBeenCalledWithContext(worker, messageObj, session, send, jasmine.any(Function));
+      expect(handleJWT.updateJWT).toHaveBeenCalledWithContext(worker, session);
       expect(finished).toHaveBeenCalledWith({
         ewd_application: 'foo',
         token: 'newJwtToken'
@@ -1304,7 +1308,7 @@ describe('unit/appHandler:', () => {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(appModule.handlers.baz).toHaveBeenCalledWith(messageObj, session, send, jasmine.any(Function));
+      expect(appModule.handlers.baz).toHaveBeenCalledWithContext(worker, messageObj, session, send, jasmine.any(Function));
       expect(handleJWT.updateJWT).not.toHaveBeenCalled();
       expect(finished).toHaveBeenCalledWith({
         ewd_application: 'foo',
@@ -1333,7 +1337,7 @@ describe('unit/appHandler:', () => {
         worker.emit('message', messageObj, send, finished);
 
         expect(appModule.beforeHandler).toHaveBeenCalledBefore(appModule.handlers.baz);
-        expect(appModule.beforeHandler).toHaveBeenCalledWith(messageObj, session, send, jasmine.any(Function));
+        expect(appModule.beforeHandler).toHaveBeenCalledWithContext(worker, messageObj, session, send, jasmine.any(Function));
       });
 
       it('should do not run handler', () => {
@@ -1379,7 +1383,7 @@ describe('unit/appHandler:', () => {
         worker.emit('message', messageObj, send, finished);
 
         expect(appModule.handlers.baz).toHaveBeenCalledBefore(appModule.afterHandler);
-        expect(appModule.afterHandler).toHaveBeenCalledWith(messageObj, session, send, jasmine.any(Function));
+        expect(appModule.afterHandler).toHaveBeenCalledWithContext(worker, messageObj, session, send, jasmine.any(Function));
       });
     });
 

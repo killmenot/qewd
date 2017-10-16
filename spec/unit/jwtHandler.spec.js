@@ -225,7 +225,7 @@ describe('unit/jwtHandler:', () => {
       sendToMicroService.call(master, socketClient, data, application, handleResponse);
 
       expect(jwt.decode).toHaveBeenCalledWith('quux', null, true);
-      expect(encodeJWTInWorker).toHaveBeenCalledWith({
+      expect(encodeJWTInWorker).toHaveBeenCalledWithContext(master, {
         application: 'baz'
       }, jasmine.any(Function));
       expect(handleResponse).toHaveBeenCalledWith({
@@ -292,7 +292,7 @@ describe('unit/jwtHandler:', () => {
 
       jwtHandler.masterRequest.call(master, data, socket, handleResponse);
 
-      expect(decodeJWTInWorker).toHaveBeenCalledWith('bar', jasmine.any(Function));
+      expect(decodeJWTInWorker).toHaveBeenCalledWithContext(master, 'bar', jasmine.any(Function));
       expect(socket.emit).toHaveBeenCalledWith('ewdjs', {
         type: 'foo',
         message: {
@@ -314,7 +314,7 @@ describe('unit/jwtHandler:', () => {
 
       jwtHandler.masterRequest.call(master, data, socket, handleResponse);
 
-      expect(decodeJWTInWorker).toHaveBeenCalledWith('bar', jasmine.any(Function));
+      expect(decodeJWTInWorker).toHaveBeenCalledWithContext(master, 'bar', jasmine.any(Function));
       expect(master.handleMessage).toHaveBeenCalledWith({
         type: 'foo',
         token: 'bar',
@@ -344,8 +344,8 @@ describe('unit/jwtHandler:', () => {
 
       jwtHandler.masterRequest.call(master, data, socket, handleResponse);
 
-      expect(decodeJWTInWorker).toHaveBeenCalledWith('bar', jasmine.any(Function));
-      expect(sendToMicroService).toHaveBeenCalledWith(socketClient, data, 'baz', handleResponse);
+      expect(decodeJWTInWorker).toHaveBeenCalledWithContext(master, 'bar', jasmine.any(Function));
+      expect(sendToMicroService).toHaveBeenCalledWithContext(master, socketClient, data, 'baz', handleResponse);
     });
 
     it('should handle request by microservice with rewrite application name', () => {
@@ -377,11 +377,11 @@ describe('unit/jwtHandler:', () => {
 
       jwtHandler.masterRequest.call(master, data, socket, handleResponse);
 
-      expect(decodeJWTInWorker).toHaveBeenCalledWith('bar', jasmine.any(Function));
-      expect(encodeJWTInWorker).toHaveBeenCalledWith({
+      expect(decodeJWTInWorker).toHaveBeenCalledWithContext(master, 'bar', jasmine.any(Function));
+      expect(encodeJWTInWorker).toHaveBeenCalledWithContext(master, {
         application: 'baz'
       }, jasmine.any(Function));
-      expect(sendToMicroService).toHaveBeenCalledWith(socketClient, data, 'quux', handleResponse);
+      expect(sendToMicroService).toHaveBeenCalledWithContext(master, socketClient, data, 'quux', handleResponse);
     });
   });
 
@@ -422,7 +422,7 @@ describe('unit/jwtHandler:', () => {
 
       const actual = jwtHandler.register.call(master, messageObj);
 
-      expect(createJWT).toHaveBeenCalledWith(messageObj);
+      expect(createJWT).toHaveBeenCalledWithContext(master, messageObj);
       expect(actual).toEqual({
         token: 'bar'
       });
@@ -450,7 +450,7 @@ describe('unit/jwtHandler:', () => {
 
       const actual = jwtHandler.reregister.call(master, payload);
 
-      expect(updateJWT).toHaveBeenCalledWith(payload);
+      expect(updateJWT).toHaveBeenCalledWithContext(master, payload);
       expect(actual).toEqual({
         ok: true,
         token: 'baz'
@@ -824,6 +824,9 @@ describe('unit/jwtHandler:', () => {
       const actual = jwtHandler.validateRestRequest.call(worker, messageObj, finished, bearer);
 
       expect(getRestJWT).toHaveBeenCalledWith(messageObj, bearer);
+      expect(validate).toHaveBeenCalledWithContext(worker, {
+        token: 'foo'
+      });
       expect(finished).toHaveBeenCalledWith({
         error: 'some error'
       });
@@ -845,6 +848,9 @@ describe('unit/jwtHandler:', () => {
       const actual = jwtHandler.validateRestRequest.call(worker, messageObj, finished, bearer);
 
       expect(getRestJWT).toHaveBeenCalledWith(messageObj, bearer);
+      expect(validate).toHaveBeenCalledWithContext(worker, {
+        token: 'foo'
+      });
       expect(finished).toHaveBeenCalledWith({
         error: 'User is not authenticated'
       });
@@ -866,6 +872,9 @@ describe('unit/jwtHandler:', () => {
       const actual = jwtHandler.validateRestRequest.call(worker, messageObj, finished, bearer);
 
       expect(getRestJWT).toHaveBeenCalledWith(messageObj, bearer);
+      expect(validate).toHaveBeenCalledWithContext(worker, {
+        token: 'foo'
+      });
       expect(finished).not.toHaveBeenCalled();
       expect(actual).toBeTruthy();
       expect(messageObj).toEqual({
@@ -891,6 +900,9 @@ describe('unit/jwtHandler:', () => {
       const actual = jwtHandler.validateRestRequest.call(worker, messageObj, finished, bearer, checkIfAuthenticated);
 
       expect(getRestJWT).toHaveBeenCalledWith(messageObj, bearer);
+      expect(validate).toHaveBeenCalledWithContext(worker, {
+        token: 'foo'
+      });
       expect(finished).not.toHaveBeenCalled();
       expect(actual).toBeTruthy();
       expect(messageObj).toEqual({
@@ -1071,7 +1083,7 @@ describe('unit/jwtHandler:', () => {
 
       var actual = jwtHandler.createUServiceSession.call(worker, messageObj);
 
-      expect(createRestSession).toHaveBeenCalledWith({
+      expect(createRestSession).toHaveBeenCalledWithContext(worker, {
         req: {
           application: 'foo',
           ip: '192.168.1.1'

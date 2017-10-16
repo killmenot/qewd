@@ -124,7 +124,7 @@ module.exports = function (mockery, boot, config) {
       const finished2 = jasmine.createSpy();
       const actual = worker.beforeHandlers[moduleName](messageObj2, session2, send2, finished2);
 
-      expect(appModule.beforeMicroServiceHandler).toHaveBeenCalledWith(messageObj2, finished2);
+      expect(appModule.beforeMicroServiceHandler).toHaveBeenCalledWithContext(worker, messageObj2, finished2);
       expect(actual).toBeTruthy();
     });
 
@@ -173,7 +173,7 @@ module.exports = function (mockery, boot, config) {
       appHandler.call(worker);
       worker.emit('message', messageObj, send, finished);
 
-      expect(appModule.init).toHaveBeenCalledWith(moduleName);
+      expect(appModule.init).toHaveBeenCalledWithContext(worker, moduleName);
     });
   });
 };

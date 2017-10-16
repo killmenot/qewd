@@ -188,8 +188,7 @@ describe('unit/master-express:', () => {
       expect(qx.router).toHaveBeenCalledWith({
         nextCallback: false
       });
-      expect(app.use).toHaveBeenCalledWith('/foo/bar', '/baz/quux');
-      expect(app.use).toHaveBeenCalledWithContext(app);
+      expect(app.use).toHaveBeenCalledWithContext(app, '/foo/bar', '/baz/quux');
     });
 
     it('should add beforeRouter', () => {
@@ -208,7 +207,7 @@ describe('unit/master-express:', () => {
       expect(qx.router).toHaveBeenCalledWith({
         nextCallback: false
       });
-      expect(app.use).toHaveBeenCalledWith('/foo/bar', '/before/router', '/baz/quux');
+      expect(app.use).toHaveBeenCalledWithContext(app, '/foo/bar', '/before/router', '/baz/quux');
     });
 
     it('should add afterRouter', () => {
@@ -227,7 +226,7 @@ describe('unit/master-express:', () => {
       expect(qx.router).toHaveBeenCalledWith({
         nextCallback: true
       });
-      expect(app.use).toHaveBeenCalledWith('/foo/bar', '/baz/quux', '/after/router');
+      expect(app.use).toHaveBeenCalledWithContext(app, '/foo/bar', '/baz/quux', '/after/router');
     });
   });
 });
