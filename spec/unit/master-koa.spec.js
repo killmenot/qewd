@@ -2,9 +2,11 @@
 
 const mockery = require('mockery');
 const rewire = require('rewire');
-const wsConfig = rewire('../../lib/master-koa');
+const isAsyncSupported = require('is-async-supported')();
+const wsConfig = isAsyncSupported ? rewire('../../lib/master-koa') : jasmine.createSpy();
+const rootSuite = isAsyncSupported ? describe : xdescribe;
 
-describe('unit/master-koa:', () => {
+rootSuite('unit/master-koa:', () => {
   let app = null;
   let koaRouter = null;
   let koaBodyParser = null;
@@ -75,7 +77,7 @@ describe('unit/master-koa:', () => {
         expect(koaRouter.addRoute).toHaveBeenCalledWith('GET /ajax/*', jasmine.any(Function));
       });
 
-      it('should process request', async () => {
+      it('should process request', (done) => {
         const config = {};
         const routes = null;
         const handlers = [];
@@ -97,19 +99,21 @@ describe('unit/master-koa:', () => {
         wsConfig(config, routes, q, qx);
 
         const fn = handlers[0];
-        await fn(ctx, next);
-
-        expect(qx.handleMessage).toHaveBeenCalledWith({
-          params: {
-            foo: 'bar'
-          },
-          state: {
+        fn(ctx, next).then(() => {
+          expect(qx.handleMessage).toHaveBeenCalledWith({
             params: {
               foo: 'bar'
+            },
+            state: {
+              params: {
+                foo: 'bar'
+              }
             }
-          }
-        }, jasmine.any(Function));
-        expect(next).toHaveBeenCalled();
+          }, jasmine.any(Function));
+          expect(next).toHaveBeenCalled();
+
+          done();
+        });
       });
     });
 
@@ -123,7 +127,7 @@ describe('unit/master-koa:', () => {
         expect(koaRouter.addRoute).toHaveBeenCalledWith('POST /ajax/*', jasmine.any(Function));
       });
 
-      it('should process request', async () => {
+      it('should process request', (done) => {
         const config = {};
         const routes = null;
         const handlers = [];
@@ -145,19 +149,21 @@ describe('unit/master-koa:', () => {
         wsConfig(config, routes, q, qx);
 
         const fn = handlers[1];
-        await fn(ctx, next);
-
-        expect(qx.handleMessage).toHaveBeenCalledWith({
-          params: {
-            baz: 'quux'
-          },
-          state: {
+        fn(ctx, next).then(() => {
+          expect(qx.handleMessage).toHaveBeenCalledWith({
             params: {
               baz: 'quux'
+            },
+            state: {
+              params: {
+                baz: 'quux'
+              }
             }
-          }
-        }, jasmine.any(Function));
-        expect(next).toHaveBeenCalled();
+          }, jasmine.any(Function));
+          expect(next).toHaveBeenCalled();
+
+          done();
+        });
       });
     });
   });
@@ -168,7 +174,7 @@ describe('unit/master-koa:', () => {
       jasmine.clock().mockDate(nowUtc);
     });
 
-    it('should set X-ResponseTime header', async () => {
+    it('should set X-ResponseTime header', (done) => {
       const config = {};
       const routes = null;
       const handlers = [];
@@ -186,13 +192,15 @@ describe('unit/master-koa:', () => {
       wsConfig(config, routes, q, qx);
 
       const fn = handlers[1];
-      await fn(ctx, next);
+      fn(ctx, next).then(() => {
+        expect(next).toHaveBeenCalled();
+        expect(ctx.set).toHaveBeenCalledWith('X-ResponseTime', '3000ms');
 
-      expect(next).toHaveBeenCalled();
-      expect(ctx.set).toHaveBeenCalledWith('X-ResponseTime', '3000ms');
+        done();
+      });
     });
 
-    it('should set CORS headers', async () => {
+    it('should set CORS headers', (done) => {
       const config = {
         cors: true
       };
@@ -209,14 +217,17 @@ describe('unit/master-koa:', () => {
       wsConfig(config, routes, q, qx);
 
       const fn = handlers[1];
-      await fn(ctx, next);
+      fn(ctx, next).then(() => {
+        expect(next).toHaveBeenCalled();
+        expect(ctx.set).toHaveBeenCalledTimes(5);
+        expect(ctx.set.calls.argsFor(1)).toEqual(['Access-Control-Allow-Credentials', 'true']);
+        expect(ctx.set.calls.argsFor(2)).toEqual(['Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization']);
+        expect(ctx.set.calls.argsFor(3)).toEqual(['Access-Control-Allow-Methods', 'GET, PUT, DELETE, POST, OPTIONS']);
+        expect(ctx.set.calls.argsFor(4)).toEqual(['Access-Control-Allow-Origin', '*']);
 
-      expect(next).toHaveBeenCalled();
-      expect(ctx.set).toHaveBeenCalledTimes(5);
-      expect(ctx.set.calls.argsFor(1)).toEqual(['Access-Control-Allow-Credentials', 'true']);
-      expect(ctx.set.calls.argsFor(2)).toEqual(['Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization']);
-      expect(ctx.set.calls.argsFor(3)).toEqual(['Access-Control-Allow-Methods', 'GET, PUT, DELETE, POST, OPTIONS']);
-      expect(ctx.set.calls.argsFor(4)).toEqual(['Access-Control-Allow-Origin', '*']);
+        done();
+      });
+
     });
   });
 
@@ -381,7 +392,7 @@ describe('unit/master-koa:', () => {
       expect(koaRouter.addRoute.calls.argsFor(10)).toEqual(['PATCH /foo/bar/:type/*', args]);
     });
 
-    it('should handle route request', async () => {
+    it('should handle route request', (done) => {
       const config = {};
       const routes = [
         {
@@ -407,19 +418,23 @@ describe('unit/master-koa:', () => {
       wsConfig(config, routes, q, qx);
 
       const fn = handlers[2];
-      await fn(ctx, next);
-
-      expect(qx.handleMessage).toHaveBeenCalledWith({
-        params: {
-          foo: 'bar'
-        },
-        state: {
+      fn(ctx, next).then(() => {
+        expect(qx.handleMessage).toHaveBeenCalledWith({
           params: {
             foo: 'bar'
+          },
+          state: {
+            params: {
+              foo: 'bar'
+            }
           }
-        }
-      }, jasmine.any(Function));
-      expect(next).toHaveBeenCalled();
+        }, jasmine.any(Function));
+        expect(next).toHaveBeenCalled();
+
+        done();
+      });
+
+
     });
 
     it('should add beforeRouter handler to route handlers chain', () => {
@@ -475,7 +490,7 @@ describe('unit/master-koa:', () => {
         expect(koaRouter.addRoute.calls.argsFor(10)).toEqual(['PATCH /foo/bar/:type/*', args]);
       });
 
-      it('should handle route request', async () => {
+      it('should handle route request', (done) => {
         const afterRouter = jasmine.createSpy();
         const config = {};
         const routes = [
@@ -503,20 +518,22 @@ describe('unit/master-koa:', () => {
         wsConfig(config, routes, q, qx);
 
         const fn = handlers[2];
-        await fn(ctx, next);
-
-        expect(qx.handleMessage).toHaveBeenCalledWith({
-          params: {
-            foo: 'bar'
-          },
-          state: {
-            nextCallback: true,
+        fn(ctx, next).then(() => {
+          expect(qx.handleMessage).toHaveBeenCalledWith({
             params: {
               foo: 'bar'
+            },
+            state: {
+              nextCallback: true,
+              params: {
+                foo: 'bar'
+              }
             }
-          }
-        }, jasmine.any(Function));
-        expect(next).toHaveBeenCalled();
+          }, jasmine.any(Function));
+          expect(next).toHaveBeenCalled();
+
+          done();
+        });
       });
     });
   });

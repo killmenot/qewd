@@ -5,6 +5,7 @@ branches:
 node_js:
   - '8'
   - '7'
+  - '6'
 after_success:
   - npm run coverage:unit
   - npm run coveralls

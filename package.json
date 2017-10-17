@@ -2,8 +2,8 @@
   "name": "qewd",
   "version": "2.24.3",
   "engines": {
-    "node": ">= 7.6",
-    "npm": ">= 4.1.2"
+    "node": ">= 6",
+    "npm": ">= 3.8.6"
   },
   "config": {
     "date": "10 October 2017"
@@ -68,6 +68,7 @@
   "devDependencies": {
     "coveralls": "^3.0.0",
     "eslint": "^4.9.0",
+    "is-async-supported": "^1.2.0",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.1.1",
     "jasmine-spy-matchers": "^1.1.0",
