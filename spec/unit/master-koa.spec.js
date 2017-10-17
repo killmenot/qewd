@@ -380,16 +380,17 @@ rootSuite('unit/master-koa:', () => {
 
       const args = [jasmine.any(Function)];
 
-      expect(koaRouter.addRoute).toHaveBeenCalledTimes(11);
+      expect(koaRouter.addRoute).toHaveBeenCalledTimes(12);
       expect(koaRouter.addRoute.calls.argsFor(2)).toEqual(['GET /foo/bar/:type', args]);
       expect(koaRouter.addRoute.calls.argsFor(3)).toEqual(['GET /foo/bar/:type/*', args]);
-      expect(koaRouter.addRoute.calls.argsFor(4)).toEqual(['POST /foo/bar/:type/*', args]);
-      expect(koaRouter.addRoute.calls.argsFor(5)).toEqual(['POST /foo/bar/:type', args]);
-      expect(koaRouter.addRoute.calls.argsFor(6)).toEqual(['DELETE /foo/bar/:type/*', args]);
-      expect(koaRouter.addRoute.calls.argsFor(7)).toEqual(['PUT /foo/bar/:type', args]);
-      expect(koaRouter.addRoute.calls.argsFor(8)).toEqual(['PUT /foo/bar/:type/*', args]);
-      expect(koaRouter.addRoute.calls.argsFor(9)).toEqual(['PATCH /foo/bar/:type', args]);
-      expect(koaRouter.addRoute.calls.argsFor(10)).toEqual(['PATCH /foo/bar/:type/*', args]);
+      expect(koaRouter.addRoute.calls.argsFor(4)).toEqual(['POST /foo/bar/:type', args]);
+      expect(koaRouter.addRoute.calls.argsFor(5)).toEqual(['POST /foo/bar/:type/*', args]);
+      expect(koaRouter.addRoute.calls.argsFor(6)).toEqual(['DELETE /foo/bar/:type', args]);
+      expect(koaRouter.addRoute.calls.argsFor(7)).toEqual(['DELETE /foo/bar/:type/*', args]);
+      expect(koaRouter.addRoute.calls.argsFor(8)).toEqual(['PUT /foo/bar/:type', args]);
+      expect(koaRouter.addRoute.calls.argsFor(9)).toEqual(['PUT /foo/bar/:type/*', args]);
+      expect(koaRouter.addRoute.calls.argsFor(10)).toEqual(['PATCH /foo/bar/:type', args]);
+      expect(koaRouter.addRoute.calls.argsFor(11)).toEqual(['PATCH /foo/bar/:type/*', args]);
     });
 
     it('should handle route request', (done) => {
@@ -451,16 +452,17 @@ rootSuite('unit/master-koa:', () => {
 
       const args = [beforeRouter, jasmine.any(Function)];
 
-      expect(koaRouter.addRoute).toHaveBeenCalledTimes(11);
+      expect(koaRouter.addRoute).toHaveBeenCalledTimes(12);
       expect(koaRouter.addRoute.calls.argsFor(2)).toEqual(['GET /foo/bar/:type', args]);
       expect(koaRouter.addRoute.calls.argsFor(3)).toEqual(['GET /foo/bar/:type/*', args]);
-      expect(koaRouter.addRoute.calls.argsFor(4)).toEqual(['POST /foo/bar/:type/*', args]);
-      expect(koaRouter.addRoute.calls.argsFor(5)).toEqual(['POST /foo/bar/:type', args]);
-      expect(koaRouter.addRoute.calls.argsFor(6)).toEqual(['DELETE /foo/bar/:type/*', args]);
-      expect(koaRouter.addRoute.calls.argsFor(7)).toEqual(['PUT /foo/bar/:type', args]);
-      expect(koaRouter.addRoute.calls.argsFor(8)).toEqual(['PUT /foo/bar/:type/*', args]);
-      expect(koaRouter.addRoute.calls.argsFor(9)).toEqual(['PATCH /foo/bar/:type', args]);
-      expect(koaRouter.addRoute.calls.argsFor(10)).toEqual(['PATCH /foo/bar/:type/*', args]);
+      expect(koaRouter.addRoute.calls.argsFor(4)).toEqual(['POST /foo/bar/:type', args]);
+      expect(koaRouter.addRoute.calls.argsFor(5)).toEqual(['POST /foo/bar/:type/*', args]);
+      expect(koaRouter.addRoute.calls.argsFor(6)).toEqual(['DELETE /foo/bar/:type', args]);
+      expect(koaRouter.addRoute.calls.argsFor(7)).toEqual(['DELETE /foo/bar/:type/*', args]);
+      expect(koaRouter.addRoute.calls.argsFor(8)).toEqual(['PUT /foo/bar/:type', args]);
+      expect(koaRouter.addRoute.calls.argsFor(9)).toEqual(['PUT /foo/bar/:type/*', args]);
+      expect(koaRouter.addRoute.calls.argsFor(10)).toEqual(['PATCH /foo/bar/:type', args]);
+      expect(koaRouter.addRoute.calls.argsFor(11)).toEqual(['PATCH /foo/bar/:type/*', args]);
     });
 
     describe('afterRouter', () => {
@@ -478,16 +480,17 @@ rootSuite('unit/master-koa:', () => {
 
         const args = [jasmine.any(Function), afterRouter];
 
-        expect(koaRouter.addRoute).toHaveBeenCalledTimes(11);
+        expect(koaRouter.addRoute).toHaveBeenCalledTimes(12);
         expect(koaRouter.addRoute.calls.argsFor(2)).toEqual(['GET /foo/bar/:type', args]);
         expect(koaRouter.addRoute.calls.argsFor(3)).toEqual(['GET /foo/bar/:type/*', args]);
-        expect(koaRouter.addRoute.calls.argsFor(4)).toEqual(['POST /foo/bar/:type/*', args]);
-        expect(koaRouter.addRoute.calls.argsFor(5)).toEqual(['POST /foo/bar/:type', args]);
-        expect(koaRouter.addRoute.calls.argsFor(6)).toEqual(['DELETE /foo/bar/:type/*', args]);
-        expect(koaRouter.addRoute.calls.argsFor(7)).toEqual(['PUT /foo/bar/:type', args]);
-        expect(koaRouter.addRoute.calls.argsFor(8)).toEqual(['PUT /foo/bar/:type/*', args]);
-        expect(koaRouter.addRoute.calls.argsFor(9)).toEqual(['PATCH /foo/bar/:type', args]);
-        expect(koaRouter.addRoute.calls.argsFor(10)).toEqual(['PATCH /foo/bar/:type/*', args]);
+        expect(koaRouter.addRoute.calls.argsFor(4)).toEqual(['POST /foo/bar/:type', args]);
+        expect(koaRouter.addRoute.calls.argsFor(5)).toEqual(['POST /foo/bar/:type/*', args]);
+        expect(koaRouter.addRoute.calls.argsFor(6)).toEqual(['DELETE /foo/bar/:type', args]);
+        expect(koaRouter.addRoute.calls.argsFor(7)).toEqual(['DELETE /foo/bar/:type/*', args]);
+        expect(koaRouter.addRoute.calls.argsFor(8)).toEqual(['PUT /foo/bar/:type', args]);
+        expect(koaRouter.addRoute.calls.argsFor(9)).toEqual(['PUT /foo/bar/:type/*', args]);
+        expect(koaRouter.addRoute.calls.argsFor(10)).toEqual(['PATCH /foo/bar/:type', args]);
+        expect(koaRouter.addRoute.calls.argsFor(11)).toEqual(['PATCH /foo/bar/:type/*', args]);
       });
 
       it('should handle route request', (done) => {
