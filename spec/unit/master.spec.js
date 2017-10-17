@@ -825,5 +825,24 @@ describe('unit/master:', () => {
   });
 
   describe('intercept', () => {
+    it('should return run time instances', () => {
+      const server = jasmine.createSpyObj(['foo']);
+        const app = jasmine.createSpyObj(['listen']);
+        app.listen.and.returnValue(server);
+        masterExpress.and.returnValue(app);
+
+        const params = {
+          no_sockets: true
+        };
+        const routes = null;
+
+        qewd.start(params, routes);
+        master.emit('started');
+
+        const xp = qewd.intercept();
+        expect(xp.app).toBe(app);
+        expect(xp.q).toBe(master);
+        expect(xp.qx).toBe(qx);
+    });
   });
 });
