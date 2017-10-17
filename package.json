@@ -2,8 +2,8 @@
   "name": "qewd",
   "version": "2.24.3",
   "engines": {
-    "node": ">= 6",
-    "npm": ">= 3.8.6"
+    "node": ">= 7.6",
+    "npm": ">= 4.1.2"
   },
   "config": {
     "date": "10 October 2017"
