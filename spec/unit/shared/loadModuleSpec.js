@@ -1,7 +1,7 @@
 'use strict';
 
-module.exports = function (mockery, boot, config) {
-  const noop = function () {};
+module.exports = (mockery, boot, config) => {
+  const noop = () => null;
   const moduleName = config.moduleName;
   const onMessage = config.onMessage || noop;
   const onSuccess = config.onSuccess || noop;

@@ -5,9 +5,11 @@ const mockery = require('mockery');
 const rewire = require('rewire');
 const qewd = rewire('../../lib/master');
 const dbMock = rewire('./mocks/db');
+const startServerSpec = rewire('./shared/startServerSpec');
 
 describe('unit/master:', () => {
   let Master = null;
+  let Worker = null;
   let master = null;
   let qx = null;
   let qxKoa = null;
@@ -22,8 +24,20 @@ describe('unit/master:', () => {
   };
 
   beforeAll(() => {
+    Worker = function (pid) {
+      this.pid = pid;
+    };
+
     Master = function () {
+      this.worker = {
+        process: {}
+      };
+      this.queue = [];
       this.start = jasmine.createSpy();
+      this.startWorker = jasmine.createSpy();
+      this.setWorkerPoolSize = jasmine.createSpy();
+      this.setWorkerIdleLimit = jasmine.createSpy();
+      this.processQueue = jasmine.createSpy();
 
       events.EventEmitter.call(this);
     };
@@ -58,7 +72,7 @@ describe('unit/master:', () => {
     jwtHandler = jasmine.createSpyObj(['foo', 'bar']);
     mockery.registerMock('./jwtHandler', jwtHandler);
 
-    spyOn(master, 'on');
+    spyOn(master, 'on').and.callThrough();
   });
 
   afterAll(() => {
@@ -540,6 +554,21 @@ describe('unit/master:', () => {
     });
 
     describe('start', () => {
+      let ewdQoper8Redis = null;
+      let ewdQoper8Cache = null;
+      let ewdQoper8Gtm = null;
+
+      beforeEach(() => {
+        ewdQoper8Redis = jasmine.createSpy();
+        mockery.registerMock('ewd-qoper8-redis', ewdQoper8Redis);
+
+        ewdQoper8Cache = jasmine.createSpy();
+        mockery.registerMock('ewd-qoper8-cache', ewdQoper8Cache);
+
+        ewdQoper8Gtm = jasmine.createSpy();
+        mockery.registerMock('ewd-qoper8-gtm', ewdQoper8Gtm);
+      });
+
       it('should add event listener', () => {
         const params = {};
 
@@ -547,15 +576,250 @@ describe('unit/master:', () => {
 
         expect(master.on).toHaveBeenCalledWith('start', jasmine.any(Function));
       });
+
+      it('should be able to configure master process', () => {
+        const params = {
+          poolSize: 5,
+          idleLimit: 3600
+        };
+
+        qewd.start(params);
+        master.emit('start');
+
+        expect(master.worker.module).toBe('qewd.worker');
+        expect(master.setWorkerPoolSize).toHaveBeenCalledWith(5);
+        expect(master.setWorkerIdleLimit).toHaveBeenCalledWith(3600);
+      });
+
+      describe('resilient mode', () => {
+        let params = null;
+
+        describe('cache', () => {
+          beforeEach(() => {
+            params = {
+              resilientMode: true,
+              database: {
+                type: 'cache',
+                params: {
+                  foo: 'bar'
+                }
+              }
+            };
+          });
+
+          it('should be configured for using cache db', () => {
+            qewd.start(params);
+            master.emit('start');
+
+            expect(master.resilientMode).toEqual({
+              documentName: 'ewdQueue'
+            });
+            expect(master.on).toHaveBeenCalledWith('dbOpened', jasmine.any(Function));
+            expect(master.on).toHaveBeenCalledWith('dbClosed', jasmine.any(Function));
+            expect(ewdQoper8Cache).toHaveBeenCalledWith(master, {
+              foo: 'bar',
+              lock: '1'
+            });
+          });
+
+          it('should handle dbOpened', () => {
+            const db = dbMock.mock();
+            db.version.and.returnValue('1.2.3');
+            master.db = db;
+
+            qewd.start(params);
+            master.emit('start');
+            master.emit('dbOpened');
+
+            expect(db.version).toHaveBeenCalled();
+          });
+
+          it('should handle dbClosed', () => {
+            const db = dbMock.mock();
+            master.db = db;
+
+            qewd.start(params);
+            master.emit('start');
+            master.emit('dbClosed');
+          });
+        });
+
+        describe('gtm', () => {
+          beforeEach(() => {
+            params = {
+              resilientMode: true,
+              database: {
+                type: 'gtm',
+                params: {
+                  foo: 'bar'
+                }
+              }
+            };
+          });
+
+          it('should be configured for using gtm db', () => {
+            qewd.start(params);
+            master.emit('start');
+
+            expect(master.resilientMode).toEqual({
+              documentName: 'ewdQueue'
+            });
+            expect(master.on).toHaveBeenCalledWith('dbOpened', jasmine.any(Function));
+            expect(master.on).toHaveBeenCalledWith('dbClosed', jasmine.any(Function));
+            expect(ewdQoper8Gtm).toHaveBeenCalledWith(master, {
+              foo: 'bar'
+            });
+          });
+
+          it('should handle dbOpened', () => {
+            const db = dbMock.mock();
+            db.version.and.returnValue('4.5.6');
+            master.db = db;
+
+            qewd.start(params);
+            master.emit('start');
+            master.emit('dbOpened');
+
+            expect(db.version).toHaveBeenCalled();
+          });
+
+          it('should handle dbClosed', () => {
+            const db = dbMock.mock();
+            master.db = db;
+
+            qewd.start(params);
+            master.emit('start');
+            master.emit('dbClosed');
+          });
+        });
+
+        describe('redis', () => {
+          beforeEach(() => {
+            params = {
+              resilientMode: true,
+              database: {
+                type: 'redis',
+                params: {
+                  host: 'localhost',
+                  port: 6379,
+                  integer_padding: 10,
+                  key_separator: '$'
+                }
+              }
+            };
+          });
+
+          it('should be configured for using redis db', () => {
+            qewd.start(params);
+            master.emit('start');
+
+            expect(master.resilientMode).toEqual({
+              documentName: 'ewdQueue'
+            });
+            expect(master.on).toHaveBeenCalledWith('dbOpened', jasmine.any(Function));
+            expect(master.on).toHaveBeenCalledWith('dbClosed', jasmine.any(Function));
+            expect(ewdQoper8Redis).toHaveBeenCalledWith(master, {
+              host: 'localhost',
+              port: 6379,
+              integer_padding: 10,
+              key_separator: '$',
+              async: true
+            });
+          });
+
+          it('should be configured for using redis db with default db params', () => {
+            delete params.database.params;
+
+            qewd.start(params);
+            master.emit('start');
+
+            expect(master.resilientMode).toEqual({
+              documentName: 'ewdQueue'
+            });
+            expect(master.on).toHaveBeenCalledWith('dbOpened', jasmine.any(Function));
+            expect(master.on).toHaveBeenCalledWith('dbClosed', jasmine.any(Function));
+            expect(ewdQoper8Redis).toHaveBeenCalledWith(master, {
+              host: undefined,
+              port: undefined,
+              integer_padding: undefined,
+              key_separator: undefined,
+              async: true
+            });
+          });
+
+          it('should handle dbOpened', () => {
+            const db = dbMock.mock();
+            db.version.and.callFake((cb) => cb('7.8.9'));
+            master.db = db;
+
+            qewd.start(params);
+            master.emit('start');
+            master.emit('dbOpened');
+
+            expect(db.version).toHaveBeenCalled();
+          });
+
+          it('should handle dbClosed', () => {
+            const db = dbMock.mock();
+            master.db = db;
+
+            qewd.start(params);
+            master.emit('start');
+            master.emit('dbClosed');
+          });
+        });
+      });
     });
 
     describe('started', () => {
+      const boot = (cb) => cb(qewd, master, qx, masterExpress);
+
       it('should add event listener', () => {
         const params = {};
 
         qewd.start(params);
 
-        expect(master.on).toHaveBeenCalledWith('start', jasmine.any(Function));
+        expect(master.on).toHaveBeenCalledWith('started', jasmine.any(Function));
+      });
+
+      startServerSpec(mockery, boot);
+
+      describe('pool prefork', () => {
+        let worker = null;
+
+        beforeEach(() => {
+          master.worker.poolSize = 1;
+          master.queue.push('foo');
+
+          worker = new Worker(1234);
+          master.worker.process[worker.pid] = worker;
+        });
+
+        describe('workerStarted', () => {
+          it('should add event listener', () => {
+            const params = {
+              poolPrefork: true
+            };
+
+            master.worker.poolSize = 2;
+
+            qewd.start(params);
+            master.emit('started');
+
+            expect(master.on).toHaveBeenCalledWith('workerStarted', jasmine.any(Function));
+            expect(master.startWorker).toHaveBeenCalledTimes(2);
+          });
+
+          startServerSpec(mockery, boot, {
+            poolPrefork: true,
+            onAfterStarted: () => {
+              master.emit('workerStarted', worker.pid, false);
+            },
+            onSuccess: () => {
+              expect(master.processQueue).toHaveBeenCalledWith(false);
+            }
+          });
+        });
       });
     });
   });
