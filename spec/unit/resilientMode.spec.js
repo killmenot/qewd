@@ -8,7 +8,7 @@ const resilientMode = rewire('../../lib/resilientMode', {
 const dbMock = require('./mocks/db');
 const documentStoreMock = require('./mocks/documentStore');
 
-fdescribe('unit/resilientMode:', () => {
+describe('unit/resilientMode:', () => {
   let Worker = null;
   let worker = null;
   let db = null;
