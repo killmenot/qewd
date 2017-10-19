@@ -75,6 +75,6 @@
     "mockery": "^2.1.0",
     "nyc": "^11.1.0",
     "pre-commit": "^1.2.2",
-    "rewire": "^2.5.2"
+    "rewire": "killmenot/rewire#fix-101"
   }
 }

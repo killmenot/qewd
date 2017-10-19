@@ -460,10 +460,10 @@ describe('unit/jwtHandler:', () => {
 
   describe('createJWT', () => {
     it('should create jwt', () => {
-      var nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
+      const nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
       jasmine.clock().mockDate(new Date(nowTime));
 
-      var messageObj = {
+      const messageObj = {
         application: 'foo',
         socketId: '/#yf_vd-S9Q7e-LX28AAAS',
         ipAddress: '127.0.0.1'
@@ -471,7 +471,7 @@ describe('unit/jwtHandler:', () => {
 
       jwt.encode.and.returnValue('jwtToken');
 
-      var actual = jwtHandler.createJWT.call(worker, messageObj);
+      const actual = jwtHandler.createJWT.call(worker, messageObj);
 
       expect(jwt.encode).toHaveBeenCalledWith({
         exp: 1483229100,
@@ -486,10 +486,10 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('createRestSession', () => {
-    var args;
+    let args = null;
 
     beforeEach(() => {
-      var nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
+      const nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
       jasmine.clock().mockDate(new Date(nowTime));
 
       args = {
@@ -501,7 +501,7 @@ describe('unit/jwtHandler:', () => {
     });
 
     it('should return rest session', () => {
-      var expected = {
+      const expected = {
         iat: 1483228800,
         iss: 'qewd.jwt',
         application: 'foo',
@@ -516,22 +516,22 @@ describe('unit/jwtHandler:', () => {
         }
       };
 
-      var actual = jwtHandler.createRestSession.call(worker, args);
+      const actual = jwtHandler.createRestSession.call(worker, args);
 
       expect(actual).toEqual(jasmine.objectContaining(expected));
     });
 
     it('should make public', () => {
-      var name = 'ipAddress';
-      var actual = jwtHandler.createRestSession.call(worker, args);
+      const name = 'ipAddress';
+      const actual = jwtHandler.createRestSession.call(worker, args);
 
       actual.makePublic(name);
       expect(actual.isSecret(name)).toBeFalsy();
     });
 
     it('should make secret', () => {
-      var name = 'socketId';
-      var actual = jwtHandler.createRestSession.call(worker, args);
+      const name = 'socketId';
+      const actual = jwtHandler.createRestSession.call(worker, args);
 
       actual.makeSecret(name);
       expect(actual.isSecret(name)).toBeTruthy();
@@ -542,7 +542,7 @@ describe('unit/jwtHandler:', () => {
     let payload = null;
 
     beforeEach(() => {
-      var nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
+      const nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
       jasmine.clock().mockDate(new Date(nowTime));
 
       payload = {
@@ -722,45 +722,45 @@ describe('unit/jwtHandler:', () => {
 
   describe('getRestJWT', () => {
     it('return empty string', () => {
-      var messageObj = {};
+      const messageObj = {};
 
-      var actual = jwtHandler.getRestJWT(messageObj);
+      const actual = jwtHandler.getRestJWT(messageObj);
 
       expect(actual).toBe('');
     });
 
     it('should return bearer token', () => {
-      var messageObj = {
+      const messageObj = {
         headers: {
           authorization: 'Bearer foo'
         }
       };
 
-      var actual = jwtHandler.getRestJWT(messageObj);
+      const actual = jwtHandler.getRestJWT(messageObj);
 
       expect(actual).toBe('foo');
     });
 
     it('should return empty string when bearer token invalid', () => {
-      var messageObj = {
+      const messageObj = {
         headers: {
           authorization: 'bar'
         }
       };
 
-      var actual = jwtHandler.getRestJWT(messageObj);
+      const actual = jwtHandler.getRestJWT(messageObj);
 
       expect(actual).toBe('');
     });
 
     it('should return authorization header', () => {
-      var messageObj = {
+      const messageObj = {
         headers: {
           authorization: 'baz'
         }
       };
 
-      var actual = jwtHandler.getRestJWT(messageObj, false);
+      const actual = jwtHandler.getRestJWT(messageObj, false);
 
       expect(actual).toBe('baz');
     });
@@ -915,14 +915,14 @@ describe('unit/jwtHandler:', () => {
 
   describe('updateJWTExpiry', () => {
     beforeEach(() => {
-      var nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
+      const nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
       jasmine.clock().mockDate(new Date(nowTime));
     });
 
     it('should return false', () => {
       jwt.decode.and.throwError();
 
-      var actual = jwtHandler.updateJWTExpiry.call(worker, 'jwtToken', 'foo');
+      const actual = jwtHandler.updateJWTExpiry.call(worker, 'jwtToken', 'foo');
 
       expect(jwt.decode).toHaveBeenCalledWith('jwtToken', null, true);
       expect(actual).toBeFalsy();
@@ -933,7 +933,7 @@ describe('unit/jwtHandler:', () => {
 
       jwt.encode.and.returnValue('jwtUpdatedToken');
 
-      var actual = jwtHandler.updateJWTExpiry.call(worker, 'jwtToken');
+      const actual = jwtHandler.updateJWTExpiry.call(worker, 'jwtToken');
 
       expect(jwt.decode).toHaveBeenCalledWith('jwtToken', null, true);
       expect(jwt.encode).toHaveBeenCalledWith({
@@ -1009,7 +1009,7 @@ describe('unit/jwtHandler:', () => {
     it('should return error', () => {
       jwt.decode.and.throwError(new Error('some error'));
 
-      var actual = jwtHandler.isJWTValid.call(worker, 'jwtToken');
+      const actual = jwtHandler.isJWTValid.call(worker, 'jwtToken');
 
       expect(jwt.decode).toHaveBeenCalledWith('jwtToken', 'jwtSecret', undefined);
       expect(actual).toEqual({
@@ -1023,7 +1023,7 @@ describe('unit/jwtHandler:', () => {
         foo: 'bar'
       });
 
-      var actual = jwtHandler.isJWTValid.call(worker, 'jwtToken', false);
+      const actual = jwtHandler.isJWTValid.call(worker, 'jwtToken', false);
 
       expect(jwt.decode).toHaveBeenCalledWith('jwtToken', 'jwtSecret', false);
       expect(actual).toEqual({
@@ -1032,7 +1032,7 @@ describe('unit/jwtHandler:', () => {
     });
 
     describe('with verify', () => {
-      var nowTime;
+      let nowTime = null;
 
       beforeEach(() => {
         nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
@@ -1045,7 +1045,7 @@ describe('unit/jwtHandler:', () => {
           exp: (nowTime / 1000) - 5 * 60 * 50 // time in the past
         });
 
-        var actual = jwtHandler.isJWTValid.call(worker, 'jwtToken', true);
+        const actual = jwtHandler.isJWTValid.call(worker, 'jwtToken', true);
 
         expect(jwt.decode).toHaveBeenCalledWith('jwtToken', 'jwtSecret', true);
         expect(actual).toEqual({
@@ -1060,7 +1060,7 @@ describe('unit/jwtHandler:', () => {
           exp: (nowTime / 1000) + 5 * 60 * 50 // time in the future
         });
 
-        var actual = jwtHandler.isJWTValid.call(worker, 'jwtToken', true);
+        const actual = jwtHandler.isJWTValid.call(worker, 'jwtToken', true);
 
         expect(jwt.decode).toHaveBeenCalledWith('jwtToken', 'jwtSecret', true);
         expect(actual).toEqual({
@@ -1072,16 +1072,16 @@ describe('unit/jwtHandler:', () => {
 
   describe('createUServiceSession', () => {
     it('should call createRestSession with correct args', () => {
-      var messageObj = {
+      const messageObj = {
         application: 'foo',
         ip: '192.168.1.1'
       };
 
-      var session = {};
-      var createRestSession = jasmine.createSpy().and.returnValue(session);
+      const session = {};
+      const createRestSession = jasmine.createSpy().and.returnValue(session);
       createRestSession.__revert__ = jwtHandler.__set__('createRestSession', createRestSession);
 
-      var actual = jwtHandler.createUServiceSession.call(worker, messageObj);
+      const actual = jwtHandler.createUServiceSession.call(worker, messageObj);
 
       expect(createRestSession).toHaveBeenCalledWithContext(worker, {
         req: {
@@ -1097,7 +1097,7 @@ describe('unit/jwtHandler:', () => {
     it('should return error', () => {
       jwt.decode.and.throwError(new Error('some error'));
 
-      var actual = jwtHandler.decodeJWT.call(worker, 'jwtToken');
+      const actual = jwtHandler.decodeJWT.call(worker, 'jwtToken');
 
       expect(jwt.decode).toHaveBeenCalledWith('jwtToken', 'jwtSecret');
       expect(actual).toEqual({
@@ -1110,7 +1110,7 @@ describe('unit/jwtHandler:', () => {
         foo: 'bar'
       });
 
-      var actual = jwtHandler.decodeJWT.call(worker, 'jwtToken');
+      const actual = jwtHandler.decodeJWT.call(worker, 'jwtToken');
 
       expect(jwt.decode).toHaveBeenCalledWith('jwtToken', 'jwtSecret');
       expect(actual).toEqual({
@@ -1125,10 +1125,10 @@ describe('unit/jwtHandler:', () => {
     it('should return token', () => {
       jwt.encode.and.returnValue('jwtToken');
 
-      var payload = {
+      const payload = {
         foo: 'bar'
       };
-      var actual = jwtHandler.encodeJWT.call(worker, payload);
+      const actual = jwtHandler.encodeJWT.call(worker, payload);
 
       expect(jwt.encode).toHaveBeenCalledWith({
         foo: 'bar'
@@ -1141,7 +1141,7 @@ describe('unit/jwtHandler:', () => {
     it('should return false when error', () => {
       jwt.decode.and.throwError('some error');
 
-      var actual = jwtHandler.getProperty('foo', 'jwtToken');
+      const actual = jwtHandler.getProperty('foo', 'jwtToken');
 
       expect(actual).toBeFalsy();
     });
@@ -1151,7 +1151,7 @@ describe('unit/jwtHandler:', () => {
         bar: 'baz'
       });
 
-      var actual = jwtHandler.getProperty('foo', 'jwtToken');
+      const actual = jwtHandler.getProperty('foo', 'jwtToken');
 
       expect(actual).toBeFalsy();
     });
@@ -1161,7 +1161,7 @@ describe('unit/jwtHandler:', () => {
         foo: 'bar'
       });
 
-      var actual = jwtHandler.getProperty('foo', 'jwtToken');
+      const actual = jwtHandler.getProperty('foo', 'jwtToken');
 
       expect(actual).toBe('bar');
     });
