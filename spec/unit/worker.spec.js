@@ -38,6 +38,10 @@ describe('unit/worker:', () => {
     mockery.enable();
   });
 
+  afterAll(() => {
+    mockery.disable();
+  });
+
   beforeEach(() => {
     worker = new Worker();
     spyOn(worker, 'on').and.callThrough();
@@ -56,10 +60,6 @@ describe('unit/worker:', () => {
 
     appHandler = jasmine.createSpy();
     mockery.registerMock('./appHandler', appHandler);
-  });
-
-  afterAll(() => {
-    mockery.disable();
   });
 
   afterEach(() => {

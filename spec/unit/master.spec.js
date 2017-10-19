@@ -48,6 +48,10 @@ describe('unit/master:', () => {
     mockery.enable();
   });
 
+  afterAll(() => {
+    mockery.disable();
+  });
+
   beforeEach(() => {
     master = new Master();
     master.__revert__ = qewd.__set__('q', master);
@@ -73,10 +77,6 @@ describe('unit/master:', () => {
     mockery.registerMock('./jwtHandler', jwtHandler);
 
     spyOn(master, 'on').and.callThrough();
-  });
-
-  afterAll(() => {
-    mockery.disable();
   });
 
   afterEach(() => {
