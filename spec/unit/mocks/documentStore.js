@@ -2,7 +2,9 @@
 
 module.exports = {
   mock: () => {
-    const documentStore = {};
+    const documentStore = {
+      DocumentNode: jasmine.createSpy()
+    };
 
     return documentStore;
   }
