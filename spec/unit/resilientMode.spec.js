@@ -254,6 +254,210 @@ describe('unit/resilientMode:', () => {
   });
 
   describe('requeueMessages', () => {
+    let requeueMessages = null;
+    let nextValue = null;
+
+    beforeEach(() => {
+      requeueMessages = resilientMode.__get__('requeueMessages');
+
+      nextValue = jasmine.createSpy();
+      nextValue.__revert__ = resilientMode.__set__('nextValue', nextValue);
+    });
+
+    afterEach(() => {
+      revert(nextValue);
+    });
+
+    it('should put any pending messages with this token back onto the queue', () => {
+      requeueMessages.call(worker, token, ix, handleMessage);
+
+      expect(nextValue).toHaveBeenCalledWithContext(worker, {
+        global: 'ewdQueue',
+        subscripts: ['pending', 'quux', '']
+      }, jasmine.any(Function));
+    });
+
+    it('should finish when no more pending record', () => {
+      const node = {
+        result: ''
+      };
+      nextValue.and.callFake((glo, cb) => cb(node));
+
+      requeueMessages.call(worker, token, ix, handleMessage);
+
+      expect(nextValue).toHaveBeenCalledTimes(1);
+      expect(db.get).not.toHaveBeenCalled();
+      expect(db.kill).not.toHaveBeenCalled();
+    });
+
+    it('should ignore current latest active pending record', () => {
+      const node = {
+        result: '1483228800000-1800216000000025'
+      };
+      nextValue.and.callFake((glo, cb) => cb(glo === node ? {result: ''} : node));
+
+      requeueMessages.call(worker, token, ix, handleMessage);
+
+      expect(nextValue).toHaveBeenCalledTimes(2);
+      expect(nextValue).toHaveBeenCalledWithContext(worker, {
+        global: 'ewdQueue',
+        subscripts: ['pending', 'quux', '']
+      }, jasmine.any(Function));
+      expect(nextValue).toHaveBeenCalledWithContext(worker, node, jasmine.any(Function));
+    });
+
+    describe('process pending record', () => {
+      beforeEach(() => {
+        const node = {
+          result: '1483236000000-1800216000000025'
+        };
+        nextValue.and.callFake((glo, cb) => cb(glo === node ? {result: ''} : node));
+      });
+
+      it('should get pending record content', () => {
+        requeueMessages.call(worker, token, ix, handleMessage);
+
+        expect(db.get).toHaveBeenCalledWith({
+          global: 'ewdQueue',
+          subscripts: ['message', '1483236000000-1800216000000025', 'content']
+        }, jasmine.any(Function));
+      });
+
+      it('should delete pending record', () => {
+        requeueMessages.call(worker, token, ix, handleMessage);
+
+        expect(db.kill).toHaveBeenCalledWith({
+          result: '1483236000000-1800216000000025'
+        }, jasmine.any(Function));
+      });
+
+      describe('process pending record content', () => {
+        it('should do nothing when content not defined', () => {
+          const result = {
+            defined: false
+          };
+          db.get.and.callFake((glo, cb) => cb(null, result));
+
+          requeueMessages.call(worker, token, ix, handleMessage);
+
+          expect(db.get).toHaveBeenCalledTimes(1);
+        });
+
+        it('should do nothing when type is ewd-register', () => {
+          const result = {
+            defined: true,
+            data: '{"type":"ewd-register"}'
+          };
+          db.get.and.callFake((glo, cb) => cb(null, result));
+
+          requeueMessages.call(worker, token, ix, handleMessage);
+
+          expect(db.get).toHaveBeenCalledTimes(1);
+        });
+
+        it('should do nothing when type is ewd-reregister', () => {
+          const result = {
+            defined: true,
+            data: '{"type":"ewd-reregister"}'
+          };
+          db.get.and.callFake((glo, cb) => cb(null, result));
+
+          requeueMessages.call(worker, token, ix, handleMessage);
+
+          expect(db.get).toHaveBeenCalledTimes(1);
+        });
+
+        it('should get pending record status and back the message onto the queue', () => {
+          const results = {
+            content: {
+              defined: true,
+              data: '{"type":"foo"}'
+            },
+            workerStatus: {
+              defined: false
+            }
+          };
+          db.get.and.callFake((glo, cb) => cb(null, results[glo.subscripts[2]]));
+
+          requeueMessages.call(worker, token, ix, handleMessage);
+
+          expect(db.get).toHaveBeenCalledTimes(2);
+          expect(db.get.calls.argsFor(0)).toEqual([
+            {
+              global: 'ewdQueue',
+              subscripts: ['message', '1483236000000-1800216000000025', 'content']
+            },
+            jasmine.any(Function)
+          ]);
+          expect(db.get.calls.argsFor(1)).toEqual([
+            {
+              global: 'ewdQueue',
+              subscripts: ['message', '1483236000000-1800216000000025', 'workerStatus']
+            },
+            jasmine.any(Function)
+          ]);
+
+          expect(nextValue).toHaveBeenCalledTimes(2);
+          expect(nextValue).toHaveBeenCalledWithContext(worker, {
+            global: 'ewdQueue',
+            subscripts: ['pending', 'quux', '']
+          }, jasmine.any(Function));
+          expect(nextValue).toHaveBeenCalledWithContext(worker, {
+            result: '1483236000000-1800216000000025'
+          }, jasmine.any(Function));
+
+          expect(handleMessage).toHaveBeenCalledWith({
+            type: 'foo'
+          });
+        });
+
+        it('should get pending record status and back the resubmitted message onto the queue', () => {
+          const results = {
+            content: {
+              defined: true,
+              data: '{"type":"foo"}'
+            },
+            workerStatus: {
+              defined: true,
+              data: 'started'
+            }
+          };
+          db.get.and.callFake((glo, cb) => cb(null, results[glo.subscripts[2]]));
+
+          requeueMessages.call(worker, token, ix, handleMessage);
+
+          expect(db.get).toHaveBeenCalledTimes(2);
+          expect(db.get.calls.argsFor(0)).toEqual([
+            {
+              global: 'ewdQueue',
+              subscripts: ['message', '1483236000000-1800216000000025', 'content']
+            },
+            jasmine.any(Function)
+          ]);
+          expect(db.get.calls.argsFor(1)).toEqual([
+            {
+              global: 'ewdQueue',
+              subscripts: ['message', '1483236000000-1800216000000025', 'workerStatus']
+            },
+            jasmine.any(Function)
+          ]);
+
+          expect(nextValue).toHaveBeenCalledTimes(2);
+          expect(nextValue).toHaveBeenCalledWithContext(worker, {
+            global: 'ewdQueue',
+            subscripts: ['pending', 'quux', '']
+          }, jasmine.any(Function));
+          expect(nextValue).toHaveBeenCalledWithContext(worker, {
+            result: '1483236000000-1800216000000025'
+          }, jasmine.any(Function));
+
+          expect(handleMessage).toHaveBeenCalledWith({
+            type: 'foo',
+            resubmitted: true
+          });
+        });
+      });
+    });
   });
 
   describe('saveResponse', () => {

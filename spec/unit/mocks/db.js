@@ -6,6 +6,7 @@ module.exports = {
       lock: jasmine.createSpy(),
       version: jasmine.createSpy(),
       set: jasmine.createSpy(),
+      get: jasmine.createSpy(),
       order: jasmine.createSpy(),
       kill: jasmine.createSpy()
     };
