@@ -44,7 +44,7 @@ describe('unit/getFragment:', () => {
     application = 'foo';
     finished = jasmine.createSpy();
 
-    fsMock = jasmine.createSpyObj(['exists', 'readFile']);
+    fsMock = jasmine.createSpyObj(['existsSync', 'readFile']);
     fsMock.__revert__ = getFragment.__set__('fs', fsMock);
 
     spyOn(require, 'resolve');
@@ -71,9 +71,7 @@ describe('unit/getFragment:', () => {
       delete messageObj.service;
 
       require.resolve.and.returnValue('/services/bar.js');
-      fsMock.exists.and.callFake(function (path, cb) {
-        cb(false);
-      });
+      fsMock.existsSync.and.returnValue(false);
     });
 
     it('should return error', () => {
@@ -112,9 +110,7 @@ describe('unit/getFragment:', () => {
 
   it('should return unable to read file error', () => {
     require.resolve.and.returnValue('/services/bar.js');
-    fsMock.exists.and.callFake(function (path, cb) {
-      cb(true);
-    });
+    fsMock.existsSync.and.returnValue(true);
     fsMock.readFile.and.callFake(function (path, options, cb) {
       cb(new Error('some error'));
     });
@@ -122,15 +118,14 @@ describe('unit/getFragment:', () => {
     getFragment.call(worker, messageObj, application, finished);
 
     expect(finished).toHaveBeenCalledWith({
-      error: 'Unable to read file /services/fragments/path/to/file.js'
+      error: 'Unable to read file /services/fragments/path/to/file.js',
+      reason: jasmine.any(Error)
     });
   });
 
   it('should return content', () => {
     require.resolve.and.returnValue('/services/bar.js');
-    fsMock.exists.and.callFake(function (path, cb) {
-      cb(true);
-    });
+    fsMock.existsSync.and.returnValue(true);
     fsMock.readFile.and.callFake(function (path, options, cb) {
       cb(null, 'some content');
     });

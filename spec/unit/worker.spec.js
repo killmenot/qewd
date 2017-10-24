@@ -275,12 +275,13 @@ describe('unit/worker:', () => {
       };
 
       qewdWorker.call(worker);
-      worker.setCustomErrorResponse(params);
+      const actual = worker.setCustomErrorResponse(params);
 
       expect(worker.errorMessages.foo.baz).toEqual({
         text: 'Unspecified Error',
         statusCode: '400'
       });
+      expect(actual).toBeTruthy();
     });
 
     it('should set custom application custom error', () => {
@@ -296,12 +297,13 @@ describe('unit/worker:', () => {
       };
 
       qewdWorker.call(worker);
-      worker.setCustomErrorResponse(params);
+      const actual = worker.setCustomErrorResponse(params);
 
       expect(worker.errorMessages.foo.baz).toEqual({
         text: 'error message',
         statusCode: '500'
       });
+      expect(actual).toBeTruthy();
     });
   });
 });

@@ -1156,7 +1156,7 @@ describe('unit/jwtHandler:', () => {
       expect(actual).toBeFalsy();
     });
 
-    it('should return false when no property', () => {
+    it('should return correct value', () => {
       jwt.decode.and.returnValue({
         foo: 'bar'
       });
@@ -1164,6 +1164,36 @@ describe('unit/jwtHandler:', () => {
       const actual = jwtHandler.getProperty('foo', 'jwtToken');
 
       expect(actual).toBe('bar');
+    });
+
+    it('should return empty string value', () => {
+      jwt.decode.and.returnValue({
+        foo: ''
+      });
+
+      const actual = jwtHandler.getProperty('foo', 'jwtToken');
+
+      expect(actual).toBe('');
+    });
+
+    it('should return null value', () => {
+      jwt.decode.and.returnValue({
+        foo: null
+      });
+
+      const actual = jwtHandler.getProperty('foo', 'jwtToken');
+
+      expect(actual).toBe(null);
+    });
+
+    it('should return bool value (false)', () => {
+      jwt.decode.and.returnValue({
+        foo: false
+      });
+
+      const actual = jwtHandler.getProperty('foo', 'jwtToken');
+
+      expect(actual).toBe(false);
     });
   });
 });
