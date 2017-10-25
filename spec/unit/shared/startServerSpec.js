@@ -14,15 +14,15 @@ module.exports = (mockery, boot, config = {}) => {
   }, params);
 
   describe('start server module', () => {
-    let qewd = null;
-    let master = null;
-    let qx = null;
-    let masterExpress = null;
+    let qewd;
+    let master;
+    let qx;
+    let masterExpress;
 
-    let https = null;
-    let socketio = null;
-    let sockets = null;
-    let fsMock = null;
+    let https;
+    let socketio;
+    let sockets;
+    let fsMock;
 
     beforeEach((done) => {
       boot((_qewd, _master, _qx, _masterExpress) => {

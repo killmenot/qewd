@@ -8,15 +8,15 @@ const dbMock = rewire('./mocks/db');
 const startServerSpec = rewire('./shared/startServerSpec');
 
 describe('unit/master:', () => {
-  let Master = null;
-  let Worker = null;
-  let master = null;
-  let qx = null;
-  let qxKoa = null;
-  let masterExpress = null;
-  let masterKoa = null;
-  let jwtHandler = null;
-  let configureMicroServices = null;
+  let Master;
+  let Worker;
+  let master;
+  let qx;
+  let qxKoa;
+  let masterExpress;
+  let masterKoa;
+  let jwtHandler;
+  let configureMicroServices;
 
   const revert = (obj) => {
     obj.__revert__();
@@ -554,9 +554,9 @@ describe('unit/master:', () => {
     });
 
     describe('start', () => {
-      let ewdQoper8Redis = null;
-      let ewdQoper8Cache = null;
-      let ewdQoper8Gtm = null;
+      let ewdQoper8Redis;
+      let ewdQoper8Cache;
+      let ewdQoper8Gtm;
 
       beforeEach(() => {
         ewdQoper8Redis = jasmine.createSpy();
@@ -592,7 +592,7 @@ describe('unit/master:', () => {
       });
 
       describe('resilient mode', () => {
-        let params = null;
+        let params;
 
         describe('cache', () => {
           beforeEach(() => {
@@ -785,7 +785,7 @@ describe('unit/master:', () => {
       startServerSpec(mockery, boot);
 
       describe('pool prefork', () => {
-        let worker = null;
+        let worker;
 
         beforeEach(() => {
           master.worker.poolSize = 1;

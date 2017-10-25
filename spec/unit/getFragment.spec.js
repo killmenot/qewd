@@ -4,12 +4,12 @@ const rewire = require('rewire');
 const getFragment = rewire('../../lib/getFragment');
 
 describe('unit/getFragment:', () => {
-  let messageObj = null;
-  let application = null;
-  let finished = null;
-  let Worker = null;
-  let worker = null;
-  let fsMock = null;
+  let messageObj;
+  let application;
+  let finished;
+  let Worker;
+  let worker;
+  let fsMock;
 
   const revert = (obj) => {
     obj.__revert__();

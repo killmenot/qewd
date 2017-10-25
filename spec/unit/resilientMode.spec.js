@@ -9,14 +9,14 @@ const dbMock = require('./mocks/db');
 const documentStoreMock = require('./mocks/documentStore');
 
 describe('unit/resilientMode:', () => {
-  let Worker = null;
-  let worker = null;
-  let db = null;
-  let documentStore = null;
-  let token = null;
-  let ix = null;
-  let count = null;
-  let handleMessage = null;
+  let Worker;
+  let worker;
+  let db;
+  let documentStore;
+  let token;
+  let ix;
+  let count;
+  let handleMessage;
 
   const revert = (obj) => {
     obj.__revert__();
@@ -69,9 +69,9 @@ describe('unit/resilientMode:', () => {
   // PUBLIC
 
   describe('storeResponse', () => {
-    let requeueMessages = null;
-    let saveResponse = null;
-    let removePendingIndex = null;
+    let requeueMessages;
+    let saveResponse;
+    let removePendingIndex;
 
     beforeEach(() => {
       requeueMessages = jasmine.createSpy();
@@ -180,7 +180,7 @@ describe('unit/resilientMode:', () => {
   });
 
   describe('garbageCollector', () => {
-    let cleardownQueueBackup = null;
+    let cleardownQueueBackup;
 
     beforeEach(() => {
       cleardownQueueBackup = jasmine.createSpy();
@@ -213,7 +213,7 @@ describe('unit/resilientMode:', () => {
   // PRIVATE
 
   describe('nextValue', () => {
-    let nextValue = null;
+    let nextValue;
 
     beforeEach(() => {
       nextValue = resilientMode.__get__('nextValue');
@@ -254,8 +254,8 @@ describe('unit/resilientMode:', () => {
   });
 
   describe('requeueMessages', () => {
-    let requeueMessages = null;
-    let nextValue = null;
+    let requeueMessages;
+    let nextValue;
 
     beforeEach(() => {
       requeueMessages = resilientMode.__get__('requeueMessages');
@@ -461,7 +461,7 @@ describe('unit/resilientMode:', () => {
   });
 
   describe('saveResponse', () => {
-    let saveResponse = null;
+    let saveResponse;
 
     beforeEach(() => {
       saveResponse = resilientMode.__get__('saveResponse');
@@ -481,7 +481,7 @@ describe('unit/resilientMode:', () => {
   });
 
   describe('removePendingIndex', () => {
-    let removePendingIndex = null;
+    let removePendingIndex;
 
     beforeEach(() => {
       removePendingIndex = resilientMode.__get__('removePendingIndex');
@@ -503,7 +503,7 @@ describe('unit/resilientMode:', () => {
   });
 
   describe('cleardownQueueBackup', () => {
-    let cleardownQueueBackup = null;
+    let cleardownQueueBackup;
 
     beforeEach(() => {
       cleardownQueueBackup = resilientMode.__get__('cleardownQueueBackup');

@@ -5,11 +5,11 @@ const rewire = require('rewire');
 const wsConfig = rewire('../../lib/master-express');
 
 describe('unit/master-express:', () => {
-  let app = null;
-  let express = null;
-  let bodyParser = null;
-  let q = null;
-  let qx = null;
+  let app;
+  let express;
+  let bodyParser;
+  let q;
+  let qx;
 
   const revert = (obj) => {
     obj.__revert__();

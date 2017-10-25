@@ -10,17 +10,17 @@ const appHandler = rewire('../../lib/appHandler');
 const loadModuleSpec = require('./shared/loadModuleSpec');
 
 describe('unit/appHandler:', () => {
-  let Worker = null;
-  let worker = null;
-  let db = null;
-  let documentStore = null;
-  let sessions = null;
-  let send = null;
-  let finished = null;
-  let handleJWT = null;
-  let getFragment = null;
-  let resilientMode = null;
-  let session = null;
+  let Worker;
+  let worker;
+  let db;
+  let documentStore;
+  let sessions;
+  let send;
+  let finished;
+  let handleJWT;
+  let getFragment;
+  let resilientMode;
+  let session;
 
   const revert = (obj) => {
     obj.__revert__();
@@ -317,7 +317,7 @@ describe('unit/appHandler:', () => {
 
   describe('ewd-qoper8-express', () => {
     const application = 'baz';
-    let messageObj = null;
+    let messageObj;
 
     beforeEach(() => {
       worker.restModule[application] = true;
@@ -860,7 +860,7 @@ describe('unit/appHandler:', () => {
     });
 
     describe('should handle message with service prop', () => {
-      let messageObj = null;
+      let messageObj;
 
       beforeEach(() => {
         messageObj = {
@@ -884,7 +884,7 @@ describe('unit/appHandler:', () => {
   });
 
   describe('application handler', () => {
-    let messageObj = null;
+    let messageObj;
 
     beforeEach(() => {
       messageObj = {
@@ -1013,7 +1013,7 @@ describe('unit/appHandler:', () => {
   });
 
   describe('service request', () => {
-    let session = null;
+    let session;
     const application = 'foo';
     const service = 'baz';
 
@@ -1117,7 +1117,7 @@ describe('unit/appHandler:', () => {
     });
 
     describe('service handler', () => {
-      let messageObj = null;
+      let messageObj;
 
       beforeEach(() => {
         messageObj = {
@@ -1254,7 +1254,7 @@ describe('unit/appHandler:', () => {
   });
 
   describe('application request', () => {
-    let session = null;
+    let session;
 
     beforeEach(() => {
       session = {

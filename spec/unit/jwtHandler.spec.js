@@ -4,11 +4,11 @@ const rewire = require('rewire');
 const jwtHandler = rewire('../../lib/jwtHandler');
 
 describe('unit/jwtHandler:', () => {
-  let Worker = null;
-  let Master = null;
-  let worker = null;
-  let master = null;
-  let jwt = null;
+  let Worker;
+  let Master;
+  let worker;
+  let master;
+  let jwt;
 
   const revert = (obj) => {
     obj.__revert__();
@@ -57,7 +57,7 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('decodeJWTInWorker', () => {
-    let decodeJWTInWorker = null;
+    let decodeJWTInWorker;
 
     beforeAll(() => {
       decodeJWTInWorker = jwtHandler.__get__('decodeJWTInWorker');
@@ -81,7 +81,7 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('encodeJWTInWorker', () => {
-    let encodeJWTInWorker = null;
+    let encodeJWTInWorker;
 
     beforeAll(() => {
       encodeJWTInWorker = jwtHandler.__get__('encodeJWTInWorker');
@@ -110,12 +110,12 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('sendToMicroService', () => {
-    let sendToMicroService = null;
-    let socketClient = null;
-    let data = null;
-    let application = null;
-    let handleResponse = null;
-    let encodeJWTInWorker = null;
+    let sendToMicroService;
+    let socketClient;
+    let data;
+    let application;
+    let handleResponse;
+    let encodeJWTInWorker;
 
     beforeAll(() => {
       sendToMicroService = jwtHandler.__get__('sendToMicroService');
@@ -237,12 +237,12 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('masterRequest', () => {
-    let data = null;
-    let socket = null;
-    let handleResponse = null;
-    let sendToMicroService = null;
-    let decodeJWTInWorker = null;
-    let encodeJWTInWorker = null;
+    let data;
+    let socket;
+    let handleResponse;
+    let sendToMicroService;
+    let decodeJWTInWorker;
+    let encodeJWTInWorker;
 
     beforeEach(() => {
       data = {
@@ -386,7 +386,7 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('register', () => {
-    let createJWT = null;
+    let createJWT;
 
     beforeEach(() => {
       createJWT = jasmine.createSpy();
@@ -430,7 +430,7 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('reregister', () => {
-    let updateJWT = null;
+    let updateJWT;
 
     beforeEach(() => {
       updateJWT = jasmine.createSpy();
@@ -486,7 +486,7 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('createRestSession', () => {
-    let args = null;
+    let args;
 
     beforeEach(() => {
       const nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
@@ -539,7 +539,7 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('updateJWT', () => {
-    let payload = null;
+    let payload;
 
     beforeEach(() => {
       const nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now
@@ -621,7 +621,7 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('validate', () => {
-    let payload = null;
+    let payload;
 
     beforeEach(() => {
       payload = {
@@ -779,8 +779,8 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('validateRestRequest', () => {
-    let getRestJWT = null;
-    let validate = null;
+    let getRestJWT;
+    let validate;
 
     beforeEach(() => {
       getRestJWT = jasmine.createSpy();
@@ -975,7 +975,7 @@ describe('unit/jwtHandler:', () => {
   });
 
   describe('isTokenAPossibleJWT', () => {
-    let isTokenAPossibleJWT = null;
+    let isTokenAPossibleJWT;
 
     beforeAll(() => {
       isTokenAPossibleJWT = jwtHandler.__get__('isTokenAPossibleJWT');
@@ -1032,7 +1032,7 @@ describe('unit/jwtHandler:', () => {
     });
 
     describe('with verify', () => {
-      let nowTime = null;
+      let nowTime;
 
       beforeEach(() => {
         nowTime = Date.UTC(2017, 0, 1); // 1483228800 * 1000, now

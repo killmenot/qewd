@@ -7,12 +7,12 @@ const wsConfig = isAsyncSupported ? rewire('../../lib/master-koa') : jasmine.cre
 const rootSuite = isAsyncSupported ? describe : xdescribe;
 
 rootSuite('unit/master-koa:', () => {
-  let app = null;
-  let koaRouter = null;
-  let koaBodyParser = null;
-  let koaServe = null;
-  let q = null;
-  let qx = null;
+  let app;
+  let koaRouter;
+  let koaBodyParser;
+  let koaServe;
+  let q;
+  let qx;
 
   const revert = (obj) => {
     obj.__revert__();
@@ -260,7 +260,7 @@ rootSuite('unit/master-koa:', () => {
   });
 
   describe('end of middleware chain', () => {
-    let fn = null;
+    let fn;
 
     beforeEach(() => {
       const config = {};

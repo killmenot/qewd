@@ -9,12 +9,12 @@ const sessionsMock = rewire('./mocks/sessions');
 const dbMock = rewire('./mocks/db');
 
 describe('unit/worker:', () => {
-  let Worker = null;
-  let worker = null;
-  let build = null;
-  let sessions = null;
-  let resilientMode = null;
-  let appHandler = null;
+  let Worker;
+  let worker;
+  let build;
+  let sessions;
+  let resilientMode;
+  let appHandler;
 
   const revert = (obj) => {
     obj.__revert__();
@@ -138,7 +138,7 @@ describe('unit/worker:', () => {
     });
 
     describe('db.use', () => {
-      let documentNode = null;
+      let documentNode;
 
       beforeEach(() => {
         documentNode = jasmine.createSpyObj(['quux']);

@@ -5,12 +5,12 @@ const rewire = require('rewire');
 const microServices = rewire('../../lib/microServices');
 
 describe('unit/microServices:', () => {
-  let Worker = null;
-  let worker = null;
-  let QewdSocketClient = null;
-  let SocketClient = null;
-  let socketClient = null;
-  let router = null;
+  let Worker;
+  let worker;
+  let QewdSocketClient;
+  let SocketClient;
+  let socketClient;
+  let router;
 
   const revert = (obj) => {
     obj.__revert__();

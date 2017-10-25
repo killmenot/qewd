@@ -8,11 +8,11 @@ module.exports = (mockery, boot, config) => {
   const onError = config.onError || noop;
 
   describe('load module', () => {
-    let appHandler = null;
-    let worker = null;
-    let messageObj = null;
-    let send = null;
-    let finished = null;
+    let appHandler;
+    let worker;
+    let messageObj;
+    let send;
+    let finished;
 
     beforeEach((done) => {
       boot((_appHandler, _worker, _send, _finished) => {
