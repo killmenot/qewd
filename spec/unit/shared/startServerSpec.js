@@ -52,13 +52,6 @@ module.exports = (mockery, boot, config = {}) => {
       revert(sockets);
     });
 
-    beforeEach((done) => {
-      boot(() => {
-
-        done();
-      });
-    });
-
     it('should be able to start http server', () => {
       const server = jasmine.createSpyObj(['foo', 'bar']);
       const app = jasmine.createSpyObj(['listen']);
