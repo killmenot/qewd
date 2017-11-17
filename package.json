@@ -67,6 +67,7 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
+    "dotenv": "^4.0.0",
     "eslint": "^4.9.0",
     "is-async-supported": "^1.2.0",
     "jasmine": "^2.8.0",
@@ -75,6 +76,9 @@
     "mockery": "^2.1.0",
     "nyc": "^11.1.0",
     "pre-commit": "^1.2.2",
-    "rewire": "killmenot/rewire#fix-101"
+    "qewd": "file:./",
+    "rewire": "killmenot/rewire#fix-101",
+    "supertest": "^3.0.0",
+    "tcp-netx": "^1.0.7-a"
   }
 }

@@ -36,8 +36,6 @@ You can install QEWD.js by typing:
 
        npm install qewd
 
-<<<<<<< HEAD
-=======
 However, you'll need to then set up the run-time environment manually.
 
 Simpler options are:
@@ -70,7 +68,6 @@ installation, listening on port 6379.
 For further details on installing and configuring QEWD.js, see 
 [this presentation slide deck](https://www.slideshare.net/robtweed/installing-configuring-ewdxpress).
 
->>>>>>> master
 
 ## Learning / Using QEWD
 
