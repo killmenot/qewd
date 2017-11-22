@@ -66,10 +66,14 @@
     "socket.io-client": "^2.0.3"
   },
   "devDependencies": {
+    "async": "^2.6.0",
     "coveralls": "^3.0.0",
     "dotenv": "^4.0.0",
     "eslint": "^4.9.0",
+    "ewd-mock": "^1.0.0",
     "is-async-supported": "^1.2.0",
+    "is-jwt": "^1.0.0",
+    "is-uuid": "^1.0.2",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.1.1",
     "jasmine-spy-matchers": "^1.1.0",

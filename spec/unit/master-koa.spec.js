@@ -67,14 +67,14 @@ rootSuite('unit/master-koa:', () => {
   });
 
   describe('/ajax', () => {
-    describe('GET /ajax/*', () => {
+    describe('GET /ajax', () => {
       it('should add event handler', () => {
         const config = {};
         const routes = null;
 
         wsConfig(config, routes, q, qx);
 
-        expect(koaRouter.addRoute).toHaveBeenCalledWith('GET /ajax/*', jasmine.any(Function));
+        expect(koaRouter.addRoute).toHaveBeenCalledWith('GET /ajax*', jasmine.any(Function));
       });
 
       it('should process request', (done) => {
@@ -85,6 +85,9 @@ rootSuite('unit/master-koa:', () => {
           state: {},
           params: {
             foo: 'bar'
+          },
+          request: {
+            headers: {}
           }
         };
         const next = jasmine.createSpy().and.callFake(() => {
@@ -108,6 +111,11 @@ rootSuite('unit/master-koa:', () => {
               params: {
                 foo: 'bar'
               }
+            },
+            request: {
+              headers: {
+                qewd: 'ajax'
+              }
             }
           }, jasmine.any(Function));
           expect(next).toHaveBeenCalled();
@@ -117,14 +125,14 @@ rootSuite('unit/master-koa:', () => {
       });
     });
 
-    describe('POST /ajax/*', () => {
+    describe('POST /ajax', () => {
       it('should add event handler', () => {
         const config = {};
         const routes = null;
 
         wsConfig(config, routes, q, qx);
 
-        expect(koaRouter.addRoute).toHaveBeenCalledWith('POST /ajax/*', jasmine.any(Function));
+        expect(koaRouter.addRoute).toHaveBeenCalledWith('POST /ajax*', jasmine.any(Function));
       });
 
       it('should process request', (done) => {
@@ -135,6 +143,9 @@ rootSuite('unit/master-koa:', () => {
           state: {},
           params: {
             baz: 'quux'
+          },
+          request: {
+            headers: {}
           }
         };
         const next = jasmine.createSpy().and.callFake(() => {
@@ -157,6 +168,11 @@ rootSuite('unit/master-koa:', () => {
             state: {
               params: {
                 baz: 'quux'
+              }
+            },
+            request: {
+              headers: {
+                qewd: 'ajax'
               }
             }
           }, jasmine.any(Function));

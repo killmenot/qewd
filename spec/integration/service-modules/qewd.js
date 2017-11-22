@@ -25,7 +25,7 @@ const config = {
   poolSize: 2,
   database: utils.db(),
   moduleMap: {
-    'test-app': path.join(__dirname, 'handlers/test-app')
+    'demo': path.join(__dirname, 'handlers/demo')
   }
 };
 qewd.start(config);

@@ -15,12 +15,6 @@ function search(args, finished) {
 }
 
 
-
-var headings = {
-  allergies: true,
-  medications: true
-};
-
 function getSummary(args, finished) {
   if (headings[args.heading]) {
     finished({
@@ -104,7 +98,7 @@ module.exports = {
         handler: login
       }
 
-    ] 
+    ]
     routes = router.initialise(routes, module.exports);
     router.setErrorResponse(404, 'Not Found');
     this.setCustomErrorResponse.call(this, {
