@@ -7,7 +7,7 @@ module.exports = {
       const incomingText = messageObj.params.text;
 
       finished({
-        text: `You sent: ${incomingText}`
+        text: `You sent: ${incomingText} via express`
       });
     }
   }

@@ -5,7 +5,7 @@ const io = require('socket.io-client');
 const isUUID = require('is-uuid');
 const utils = require('../utils');
 
-describe('integration/qewd/basic:', () => {
+describe('integration/qewd/basic-express:', () => {
   let cp;
 
   const options = {
@@ -146,7 +146,7 @@ describe('integration/qewd/basic:', () => {
             type: 'test',
             token: res.body.token,
             params: {
-              text: 'Hello world!'
+              text: 'Hello world'
             }
           };
 
@@ -165,7 +165,7 @@ describe('integration/qewd/basic:', () => {
           type: 'test',
           finished: true,
           message: {
-            text: 'You sent: Hello world!'
+            text: 'You sent: Hello world via express'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -181,7 +181,7 @@ describe('integration/qewd/basic:', () => {
         expect(200).
         expect(res => {
           expect(res.body).toEqual({
-            text: 'You sent: Hello world!'
+            text: 'You sent: Hello world via express'
           });
         }).
         end(err => err ? done.fail(err) : done());

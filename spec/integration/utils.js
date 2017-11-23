@@ -7,7 +7,7 @@ module.exports = {
 
     cp.on('message', (message) => {
       if (message.type === 'qewd:started') {
-        callback();
+        setTimeout(callback, 500);
       }
     });
 
@@ -15,7 +15,7 @@ module.exports = {
   },
 
   exit: (cp, callback) => {
-    cp.on('exit', () => callback());
+    cp.on('exit', () => setTimeout(callback, 500));
     cp.kill();
   },
 
@@ -25,7 +25,5 @@ module.exports = {
       case 'gtm': return {type: 'gtm'};
       default: return {type: 'redis'};
     }
-  },
-
-  webServer: () => process.env.WEB_SERVER || 'express'
+  }
 };

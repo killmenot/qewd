@@ -8,9 +8,7 @@ node_js:
 services:
   - redis-server
 env:
-  # Can't figure out how to DRY this up: http://stackoverflow.com/q/22397300/3191
-  - WEB_SERVER=express DATABASE=redis
-  - WEB_SERVER=koa DATABASE=redis
+  - DATABASE=redis
 after_success:
   - npm run coverage:unit
   - npm run coveralls

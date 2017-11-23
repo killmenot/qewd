@@ -23,7 +23,7 @@ describe('integration/qewd/microservices:', () => {
       if (err) return done.fail(err);
 
       cps = results;
-      setTimeout(done, 1000);
+      done();
     });
   });
 

@@ -20,7 +20,6 @@ q.on('started', function () {
 const config = {
   managementPassword: 'keepThisSecret!',
   serverName: 'My QEWD Server',
-  webServer: utils.webServer(),
   port: 8080,
   poolSize: 2,
   database: utils.db(),
