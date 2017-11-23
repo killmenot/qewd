@@ -20,12 +20,10 @@ q.on('started', function () {
 const config = {
   managementPassword: 'keepThisSecret!',
   serverName: 'New QEWD Server',
-  webServer: 'express',
+  webServer: utils.webServer(),
+  cors: true,
   port: 8080,
   poolSize: 2,
-  database: utils.db(),
-  moduleMap: {
-    'test-app': path.join(__dirname, 'handlers/test-app')
-  }
+  database: utils.db()
 };
 qewd.start(config);

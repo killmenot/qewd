@@ -19,6 +19,8 @@ module.exports = {
     cp.kill();
   },
 
+  webServer: () => process.env.WEB_SERVER || 'express',
+
   db: () => {
     switch (process.env.DATABASE) {
       case 'cache': return {type: 'cache'};

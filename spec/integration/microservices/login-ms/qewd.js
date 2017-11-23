@@ -20,7 +20,7 @@ q.on('started', function () {
 const config = {
   managementPassword: 'keepThisSecret!',
   serverName: 'QEWD Login MicroService',
-  webServer: 'express',
+  webServer: utils.webServer(),
   port: 8081,
   poolSize: 2,
   database: utils.db(),
