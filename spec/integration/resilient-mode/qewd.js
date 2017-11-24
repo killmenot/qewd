@@ -19,17 +19,14 @@ q.on('started', function () {
 
 const config = {
   managementPassword: 'keepThisSecret!',
-  serverName: 'My QEWD Server',
+  serverName: 'New QEWD Server',
   webServer: utils.webServer(),
   port: 8080,
   poolSize: 2,
-  database: utils.db()
-};
-const routes = [
-  {
-    path: '/api',
-    module: path.join(__dirname, 'handlers/myRestService')
+  database: utils.db(),
+  resilientMode: true,
+  moduleMap: {
+    'test-app': path.join(__dirname, 'handlers/test-app')
   }
-];
-
-qewd.start(config, routes);
+};
+qewd.start(config);

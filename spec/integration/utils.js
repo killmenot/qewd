@@ -7,7 +7,7 @@ module.exports = {
 
     cp.on('message', (message) => {
       if (message.type === 'qewd:started') {
-        setTimeout(callback, 500);
+        setTimeout(callback, 100);
       }
     });
 
@@ -15,7 +15,7 @@ module.exports = {
   },
 
   exit: (cp, callback) => {
-    cp.on('exit', () => setTimeout(callback, 500));
+    cp.on('exit', () => setTimeout(callback, 100));
     cp.kill();
   },
 

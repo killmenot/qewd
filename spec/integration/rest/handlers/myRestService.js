@@ -27,7 +27,7 @@ function login(args, finished) {
 module.exports = {
   restModule: true,
 
- beforeHandler: function (req, finished) {
+  beforeHandler: function (req, finished) {
     if (req.path !== '/api/login') {
       return this.sessions.authenticateRestRequest(req, finished);
     }

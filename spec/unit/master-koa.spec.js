@@ -74,7 +74,7 @@ rootSuite('unit/master-koa:', () => {
 
         wsConfig(config, routes, q, qx);
 
-        expect(koaRouter.addRoute).toHaveBeenCalledWith('GET /ajax*', jasmine.any(Function));
+        expect(koaRouter.addRoute).toHaveBeenCalledWith('GET /ajax', jasmine.any(Function));
       });
 
       it('should process request', (done) => {
@@ -132,7 +132,7 @@ rootSuite('unit/master-koa:', () => {
 
         wsConfig(config, routes, q, qx);
 
-        expect(koaRouter.addRoute).toHaveBeenCalledWith('POST /ajax*', jasmine.any(Function));
+        expect(koaRouter.addRoute).toHaveBeenCalledWith('POST /ajax', jasmine.any(Function));
       });
 
       it('should process request', (done) => {
