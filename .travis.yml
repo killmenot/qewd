@@ -14,7 +14,7 @@ env:
   - WEB_SERVER=koa DATABASE=redis
 matrix:
   exclude:
-  - node_js: 6
+  - node_js: '6'
     env: WEB_SERVER=koa DATABASE=redis
 after_success:
   - npm run coverage:unit
