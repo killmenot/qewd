@@ -33,9 +33,16 @@ const config = {
         host: 'http://127.0.0.1:8081',
         application: 'login-micro-service'
       },
-      store: {
+      store1: {
         host: 'http://127.0.0.1:8082',
         application: 'stock-list'
+      },
+      store2: {
+        host: 'http://127.0.0.1:8082',
+        application: 'stock-list'
+      },
+      all_stores: {
+        destinations: ['store1', 'store2']
       }
     },
     routes: [
@@ -56,6 +63,11 @@ const config = {
       {
         path: '/api/store/:destination/category/:category/stocklist',
         method: 'GET'
+      },
+      {
+        path: '/api/store/all/stocklist',
+        method: 'GET',
+        destination: 'all_stores'
       }
     ]
   }

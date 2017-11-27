@@ -20,7 +20,10 @@ rootSuite('unit/master-koa:', () => {
   };
 
   beforeAll(() => {
-    mockery.enable();
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    });
   });
 
   afterAll(() => {

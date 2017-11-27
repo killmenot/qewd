@@ -8,14 +8,26 @@ node_js:
   - '6'
 services:
   - redis-server
+before_install:
+  - chmod +x `ls installers/*.sh`
+  - if [ $DATABASE = "gtm" ]; then
+    ./installers/install_gtm_only.sh;
+    source ~/.profile;
+    ./installers/install_nodem.sh $TRAVIS_BUILD_DIR;
+    source ~/.profile;
+    fi
 env:
   # Can't figure out how to DRY this up: http://stackoverflow.com/q/22397300/3191
   - WEB_SERVER=express DATABASE=redis
   - WEB_SERVER=koa DATABASE=redis
+  - WEB_SERVER=express DATABASE=gtm
+  - WEB_SERVER=koa DATABASE=gtm
 matrix:
   exclude:
   - node_js: '6'
     env: WEB_SERVER=koa DATABASE=redis
+  - node_js: '6'
+    env: WEB_SERVER=koa DATABASE=gtm
 after_success:
   - npm run coverage:unit
   - npm run coveralls

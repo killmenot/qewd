@@ -17,7 +17,10 @@ describe('unit/master-express:', () => {
   };
 
   beforeAll(() => {
-    mockery.enable();
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    });
   });
 
   afterAll(() => {

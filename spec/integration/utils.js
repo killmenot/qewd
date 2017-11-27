@@ -1,4 +1,6 @@
 const fork = require('child_process').fork;
+const QEWD_STARTED_TIMEOUT = process.env.QEWD_STARTED_TIMEOUT;
+const EXIT_TIMEOUT = process.env.EXIT_TIMEOUT;
 
 module.exports = {
 
@@ -7,7 +9,7 @@ module.exports = {
 
     cp.on('message', (message) => {
       if (message.type === 'qewd:started') {
-        setTimeout(callback, 100);
+        setTimeout(callback, QEWD_STARTED_TIMEOUT);
       }
     });
 
@@ -15,7 +17,7 @@ module.exports = {
   },
 
   exit: (cp, callback) => {
-    cp.on('exit', () => setTimeout(callback, 100));
+    cp.on('exit', () => setTimeout(callback, EXIT_TIMEOUT));
     cp.kill();
   },
 

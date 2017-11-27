@@ -9,12 +9,12 @@ Twitter: [@rtweed](https://twitter.com/rtweed)
 
 Google Group for discussions, support, advice etc: [http://groups.google.co.uk/group/enterprise-web-developer-community](http://groups.google.co.uk/group/enterprise-web-developer-community)
 
-Thanks to Ward De Backer for debugging assistance and functionality suggestions
+Thanks to Ward De Backer for debugging assistance and functionality suggestions.
 
 
 ## What is QEWD?
 
-This is best answered by reading [this article on QEWD](https://robtweed.wordpress.com/2017/04/18/having-your-node-js-cake-and-eating-it-too/)
+This is best answered by reading [this article on QEWD](https://robtweed.wordpress.com/2017/04/18/having-your-node-js-cake-and-eating-it-too/).
 
 In summary: [QEWD](http://qewdjs.com) is a Node.js-based platform for developing and running interactive browser-based applications and Web/REST services.
 
@@ -79,7 +79,8 @@ See the free online [training course](http://docs.qewdjs.com/qewd_training.html)
 
 ## License
 
- Copyright (c) 2016 M/Gateway Developments Ltd,                           
+```
+ Copyright (c) 2017 M/Gateway Developments Ltd,                           
  Reigate, Surrey UK.                                                      
  All rights reserved.                                                     
                                                                            
@@ -98,3 +99,4 @@ See the free online [training course](http://docs.qewdjs.com/qewd_training.html)
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
   See the License for the specific language governing permissions and      
    limitations under the License.      
+```

@@ -46,9 +46,9 @@
     "ewd-client": "^1.17.0",
     "ewd-qoper8": "^3.16.0",
     "ewd-qoper8-cache": "^2.2.1",
-    "ewd-qoper8-express": "killmenot/ewd-qoper8-express#refactoring",
+    "ewd-qoper8-express": "github:killmenot/ewd-qoper8-express#refactoring",
     "ewd-qoper8-gtm": "^2.3.2",
-    "ewd-qoper8-koa": "killmenot/ewd-qoper8-koa#tests",
+    "ewd-qoper8-koa": "github:killmenot/ewd-qoper8-koa#tests",
     "ewd-qoper8-redis": "^0.1.1",
     "ewd-session": "^2.19.0",
     "express": "^4.16.2",
@@ -58,7 +58,6 @@
     "koa-better-router": "^2.1.1",
     "koa-bodyparser": "^4.2.0",
     "koa-static": "^4.0.1",
-    "polyjuice": "^2.2.4",
     "qewd-monitor": "^2.4.0",
     "qewd-router": "^1.12.0",
     "redis": "^2.8.0",
@@ -81,8 +80,8 @@
     "nyc": "^11.1.0",
     "pre-commit": "^1.2.2",
     "qewd": "file:./",
-    "rewire": "killmenot/rewire#fix-101",
+    "rewire": "github:killmenot/rewire#fix-101",
     "supertest": "^3.0.0",
-    "tcp-netx": "^1.0.7-a"
+    "tcp-netx": "^1.0.7"
   }
 }

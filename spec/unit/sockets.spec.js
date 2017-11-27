@@ -26,7 +26,10 @@ describe('unit/sockets:', () => {
       this.handleMessage = jasmine.createSpy();
     };
 
-    mockery.enable();
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    });
   });
 
   afterAll(() => {

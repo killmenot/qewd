@@ -1,0 +1,16 @@
+{
+  "git": {
+    "version": "2.15.0"
+  },
+  "nodejs": {
+    "version": "9.2.0",
+    "install_method": "binary",
+    "binary": {
+      "checksum": "84579415724cd607d177cd493881b409be08203198abbb26834e06b0b4462b59"
+    }
+  },
+  "run_list": [
+    "recipe[git]",
+    "recipe[nodejs]"
+  ]
+}

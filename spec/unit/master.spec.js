@@ -45,7 +45,10 @@ describe('unit/master:', () => {
     Master.prototype = Object.create(events.EventEmitter.prototype);
     Master.prototype.constructor = Master;
 
-    mockery.enable();
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    });
   });
 
   afterAll(() => {

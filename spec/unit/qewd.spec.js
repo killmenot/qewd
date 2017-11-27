@@ -5,6 +5,8 @@ const mockery = require('mockery');
 describe('unit/qewd:', () => {
   beforeEach(() => {
     mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false,
       useCleanCache: true
     });
   });

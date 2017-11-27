@@ -5,7 +5,11 @@ const io = require('socket.io-client');
 const isUUID = require('is-uuid');
 const utils = require('../utils');
 
-describe('integration/qewd/resilient-mode:', () => {
+// resilient mode doesn't work with GT.M /Yotta
+// https://github.com/robtweed/qewd/issues/32
+const DESCRIBE = utils.db().type === 'gtm' ? xdescribe : describe;
+
+DESCRIBE('integration/qewd/resilient-mode:', () => { // eslint-disable-line new-cap
   let cp;
 
   const options = {

@@ -44,7 +44,10 @@ describe('unit/appHandler:', () => {
     Worker.prototype = Object.create(events.EventEmitter.prototype);
     Worker.prototype.constructor = Worker;
 
-    mockery.enable();
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    });
   });
 
   afterAll(() => {
