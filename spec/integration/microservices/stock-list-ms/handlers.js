@@ -25,6 +25,9 @@ module.exports = {
 
   init: function () {
     const routes = {
+      '/api/store/all/stocklist': {
+        GET: getStockList
+      },
       '/api/store/:destination/stocklist': {
         GET: getStockList
       },

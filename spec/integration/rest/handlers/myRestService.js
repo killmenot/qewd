@@ -1,6 +1,7 @@
 'use strict';
 
 const router = require('qewd-router');
+const debug = require('debug')('qewd:integration:rest');
 
 function search(args, finished) {
   finished({
@@ -31,6 +32,10 @@ module.exports = {
     if (req.path !== '/api/login') {
       return this.sessions.authenticateRestRequest(req, finished);
     }
+  },
+
+  afterHandler: function (req) {
+    debug('%s %s', req.method, req.path);
   },
 
   init: function (application) {

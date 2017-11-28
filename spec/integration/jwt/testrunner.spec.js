@@ -1,7 +1,6 @@
 'use strict';
 
 const io = require('socket.io-client');
-const isJWT = require('is-jwt');
 const utils = require('../utils');
 
 describe('integration/qewd/jwt:', () => {
@@ -19,8 +18,8 @@ describe('integration/qewd/jwt:', () => {
     utils.exit(cp, done);
   });
 
-  describe('register', () => {
-    it('should be able to register app using websockets', (done) => {
+  describe('ewd-register', () => {
+    it('should register jwt app using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
       const data = {
         type: 'ewd-register',
@@ -40,14 +39,14 @@ describe('integration/qewd/jwt:', () => {
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
-        expect(isJWT(responseObj.message.token)).toBeTruthy();
+        expect(utils.isJWT(responseObj.message.token)).toBeTruthy();
 
         done();
       });
     });
   });
 
-  describe('reregister', () => {
+  describe('ewd-reregister', () => {
     let data;
 
     beforeEach((done) => {
@@ -74,7 +73,7 @@ describe('integration/qewd/jwt:', () => {
       });
     });
 
-    it('should be able to reregister app using websockets', (done) => {
+    it('should reregister jwt app using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -90,7 +89,7 @@ describe('integration/qewd/jwt:', () => {
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
-        expect(isJWT(responseObj.message.token)).toBeTruthy();
+        expect(utils.isJWT(responseObj.message.token)).toBeTruthy();
 
         done();
       });
@@ -127,7 +126,7 @@ describe('integration/qewd/jwt:', () => {
       });
     });
 
-    it('should be able to send message using websockets', (done) => {
+    it('should send custom message to jwt app using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => {
@@ -146,7 +145,7 @@ describe('integration/qewd/jwt:', () => {
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
-        expect(isJWT(responseObj.message.token)).toBeTruthy();
+        expect(utils.isJWT(responseObj.message.token)).toBeTruthy();
 
         done();
       });

@@ -1,6 +1,5 @@
 'use strict';
 
-const isJWT = require('is-jwt');
 const request = require('supertest')('http://localhost:8080');
 const utils = require('../utils');
 
@@ -37,7 +36,7 @@ describe('integration/qewd/rest-jwt:', () => {
   });
 
   describe('POST /api/login', () => {
-    it('should be able to return jwt', (done) => {
+    it('should return jwt', (done) => {
       const data = {
         username: 'rob',
         password: 'secret'
@@ -48,14 +47,14 @@ describe('integration/qewd/rest-jwt:', () => {
         send(data).
         expect(200).
         expect(res => {
-          expect(isJWT(res.body.token)).toBeTruthy();
+          expect(utils.isJWT(res.body.token)).toBeTruthy();
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
   describe('GET /api/search', () => {
-    it('should be able to make request using jwt', (done) => {
+    it('should send authenticated request using jwt', (done) => {
       request.
         get('/api/search').
         set('authorization', `Bearer ${token}`).
@@ -66,14 +65,14 @@ describe('integration/qewd/rest-jwt:', () => {
             username: 'rob',
             token: jasmine.any(String)
           });
-          expect(isJWT(res.body.token)).toBeTruthy();
+          expect(utils.isJWT(res.body.token)).toBeTruthy();
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
   describe('GET /api/not-exist', () => {
-    it('should be able to return 404 not found', (done) => {
+    it('should return 404 not found', (done) => {
       request.
         get('/api/not-exist').
         set('authorization', `Bearer ${token}`).

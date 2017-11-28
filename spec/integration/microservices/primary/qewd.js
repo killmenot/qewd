@@ -38,7 +38,8 @@ const config = {
         application: 'stock-list'
       },
       store2: {
-        host: 'http://127.0.0.1:8082',
+        // hack: use localhost to create 2 different clients on the same host
+        host: 'http://localhost:8082',
         application: 'stock-list'
       },
       all_stores: {
@@ -57,17 +58,17 @@ const config = {
         destination: 'login_service'
       },
       {
+        path: '/api/store/all/stocklist',
+        method: 'GET',
+        destination: 'all_stores'
+      },
+      {
         path: '/api/store/:destination/stocklist',
         method: 'GET'
       },
       {
         path: '/api/store/:destination/category/:category/stocklist',
         method: 'GET'
-      },
-      {
-        path: '/api/store/all/stocklist',
-        method: 'GET',
-        destination: 'all_stores'
       }
     ]
   }

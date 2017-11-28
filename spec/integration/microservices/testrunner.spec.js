@@ -2,17 +2,15 @@
 
 const path = require('path');
 const async = require('async');
-const isJWT = require('is-jwt');
 const request = require('supertest')('http://localhost:8080');
 const utils = require('../utils');
-const MICROSERVICES_STARTED_TIMEOUT = process.env.MICROSERVICES_STARTED_TIMEOUT;
 
 describe('integration/qewd/microservices:', () => {
   let cps;
   let token;
 
   beforeAll((done) => {
-    const tasks = ['login-ms', 'stock-list-ms', 'primary'];
+    const services = ['login-ms', 'stock-list-ms', 'primary'];
     const iteratee = (task, cb) => {
       const options = {
         cwd: path.join(__dirname, task)
@@ -20,11 +18,11 @@ describe('integration/qewd/microservices:', () => {
       const cp = utils.fork('./qewd', options, () => cb(null, cp));
     };
 
-    async.mapSeries(tasks, iteratee, (err, results) => {
+    async.mapSeries(services, iteratee, (err, results) => {
       if (err) return done.fail(err);
 
       cps = results;
-      setTimeout(done, MICROSERVICES_STARTED_TIMEOUT);
+      setTimeout(done, process.env.MICROSERVICES_STARTED_TIMEOUT);
     });
   });
 
@@ -34,18 +32,20 @@ describe('integration/qewd/microservices:', () => {
   });
 
   beforeEach((done) => {
+    const data = {
+      username: 'rob',
+      password: 'secret'
+    };
+
     request.
       post('/api/login').
-      send({
-        username: 'rob',
-        password: 'secret'
-      }).
+      send(data).
       expect(res => token = res.body.token).
       end(err => err ? done.fail(err) : done());
   });
 
   describe('POST /api/login', () => {
-    it('should be able to return jwt', (done) => {
+    it('should send request to login service', (done) => {
       const data = {
         username: 'rob',
         password: 'secret'
@@ -56,14 +56,14 @@ describe('integration/qewd/microservices:', () => {
         send(data).
         expect(200).
         expect(res => {
-          expect(isJWT(res.body.token)).toBeTruthy();
+          expect(utils.isJWT(res.body.token)).toBeTruthy();
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
   describe('GET /api/info', () => {
-    it('should be able to do request to local handlers and return data', (done) => {
+    it('should send request to local service', (done) => {
       request.
         get('/api/info').
         set('authorization', `Bearer ${token}`).
@@ -76,14 +76,14 @@ describe('integration/qewd/microservices:', () => {
             },
             token: jasmine.any(String)
           });
-          expect(isJWT(res.body.token)).toBeTruthy();
+          expect(utils.isJWT(res.body.token)).toBeTruthy();
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
   describe('GET /api/patient/:patientId/demographics', () => {
-    it('should be able to do request to micro service return data', (done) => {
+    it('should send authenticated request to login service with params', (done) => {
       request.
         get('/api/patient/123457/demographics').
         set('authorization', `Bearer ${token}`).
@@ -96,14 +96,40 @@ describe('integration/qewd/microservices:', () => {
             country: 'USA',
             token: jasmine.any(String)
           });
-          expect(isJWT(res.body.token)).toBeTruthy();
+          expect(utils.isJWT(res.body.token)).toBeTruthy();
+        }).
+        end(err => err ? done.fail(err) : done());
+    });
+  });
+
+  describe('GET /api/store/all/stocklist', () => {
+    it('should send request to grouped destination', (done) => {
+      request.
+        get('/api/store/all/stocklist').
+        set('authorization', `Bearer ${token}`).
+        expect(200).
+        expect(res => {
+          expect(res.body).toEqual({
+            results: {
+              store1: {
+                'ip': '127.0.0.1:8082',
+                'stock': 'stock list here...'
+              },
+              store2: {
+                'ip': '127.0.0.1:8082',
+                'stock': 'stock list here...'
+              }
+            },
+            token: jasmine.any(String)
+          });
+          expect(utils.isJWT(res.body.token)).toBeTruthy();
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
   describe('GET /api/store/:destination/stocklist', () => {
-    it('should be able to do request to micro service return data', (done) => {
+    it('should send request to dynamic destination', (done) => {
       request.
         get('/api/store/store1/stocklist').
         set('authorization', `Bearer ${token}`).
@@ -115,7 +141,22 @@ describe('integration/qewd/microservices:', () => {
             stock: 'stock list here...',
             token: jasmine.any(String)
           });
-          expect(isJWT(res.body.token)).toBeTruthy();
+          expect(utils.isJWT(res.body.token)).toBeTruthy();
+        }).
+        end(err => err ? done.fail(err) : done());
+    });
+
+    it('should be able to do request with non existing destination', (done) => {
+      request.
+        get('/api/store/store3/stocklist').
+        set('authorization', `Bearer ${token}`).
+        expect(400).
+        expect(res => {
+          const body = res.body;
+
+          expect(body).toEqual({
+            error: 'No such destination: store3'
+          });
         }).
         end(err => err ? done.fail(err) : done());
     });

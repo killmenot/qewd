@@ -31,21 +31,17 @@ describe('integration/qewd/service-modules:', () => {
         if (err) return done.fail(err);
 
         data = {
-          type: 'ewd-fragment',
-          service: 'ewd-mock',
-          token: res.body.token,
-          params: {
-            file: 'template.html',
-            targetId: 'targetId'
-          }
+          type: 'helloWorld',
+          service: 'ewd-helloworld-service',
+          token: res.body.token
         };
 
         done();
       });
   });
 
-  describe('default', () => {
-    it('should be able to get fragment using websockets', (done) => {
+  describe('sending message to service', () => {
+    it('should send message using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -53,11 +49,11 @@ describe('integration/qewd/service-modules:', () => {
         socket.disconnect();
 
         expect(responseObj).toEqual({
-          type: 'ewd-fragment',
+          type: 'helloWorld',
           finished: true,
           message: {
-            fragmentName: 'template.html',
-            content: '<h2>This is fragment</h2>'
+            type: 'helloWorld',
+            text: 'Hello world!'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -66,27 +62,28 @@ describe('integration/qewd/service-modules:', () => {
       });
     });
 
-    it('should be able to get fragment using ajax', (done) => {
+    it('should send message using ajax', (done) => {
       request.
         post('/ajax').
         send(data).
         expect(200).
         expect(res => {
           expect(res.body).toEqual({
-            fragmentName: 'template.html',
-            content: '<h2>This is fragment</h2>'
+            type: 'helloWorld',
+            text: 'Hello world!'
           });
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
-  describe('have no permissions', () => {
+  describe('service has no permissions', () => {
     beforeEach(() => {
-      data.service = 'ewd-quux';
+      data.service = 'ewd-mock';
+      data.type = 'mock';
     });
 
-    it('should not be able to get fragment due to permissions using websockets', (done) => {
+    it('should return permissions error using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -94,10 +91,11 @@ describe('integration/qewd/service-modules:', () => {
         socket.disconnect();
 
         expect(responseObj).toEqual({
-          type: 'ewd-fragment',
+          type: 'mock',
           finished: true,
           message: {
-            error: 'ewd-quux service is not permitted for the demo application'
+            service: 'ewd-mock',
+            error: 'ewd-mock service is not permitted for the demo application'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -106,26 +104,26 @@ describe('integration/qewd/service-modules:', () => {
       });
     });
 
-    it('should be able to get fragment due to permissions using ajax', (done) => {
+    it('should return permissions error using ajax', (done) => {
       request.
         post('/ajax').
         send(data).
         expect(400).
         expect(res => {
           expect(res.body).toEqual({
-            error: 'ewd-quux service is not permitted for the demo application'
+            error: 'ewd-mock service is not permitted for the demo application'
           });
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
-  describe('template file does not exist', () => {
+  describe('no handler type', () => {
     beforeEach(() => {
-      data.params.file = 'quux.html';
+      data.type = 'quux';
     });
 
-    it('should not be able to get fragment due because template not found using websockets', (done) => {
+    it('should return no handler found error using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -133,12 +131,11 @@ describe('integration/qewd/service-modules:', () => {
         socket.disconnect();
 
         expect(responseObj).toEqual({
-          type: 'ewd-fragment',
+          type: 'quux',
           finished: true,
           message: {
-            error: 'Fragment file quux.html does not exist',
-            file: 'quux.html',
-            service: 'ewd-mock'
+            service: 'ewd-helloworld-service',
+            error: 'No handler defined for ewd-helloworld-service service messages of type quux'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -147,14 +144,14 @@ describe('integration/qewd/service-modules:', () => {
       });
     });
 
-    it('should be able to get fragment due to permissions using ajax', (done) => {
+    it('should return no handler found using ajax', (done) => {
       request.
         post('/ajax').
         send(data).
         expect(400).
         expect(res => {
           expect(res.body).toEqual({
-            error: 'Fragment file quux.html does not exist',
+            error: 'No handler defined for ewd-helloworld-service service messages of type quux',
           });
         }).
         end(err => err ? done.fail(err) : done());

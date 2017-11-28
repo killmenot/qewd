@@ -4,10 +4,9 @@ const request = require('supertest')('http://localhost:8080');
 const io = require('socket.io-client');
 const utils = require('../utils');
 
-// resilient mode doesn't work with GT.M / Yotta
-// https://github.com/robtweed/qewd/issues/32
-(utils.db().type === 'gtm' ? xdescribe : describe)('integration/qewd/resilient-mode:', () => {
+describe('integration/qewd/ewd-fragment:', () => {
   let cp;
+  let data;
 
   const options = {
     cwd: __dirname
@@ -21,72 +20,32 @@ const utils = require('../utils');
     utils.exit(cp, done);
   });
 
-  describe('ewd-register', () => {
-    let data;
-
-    beforeEach(() => {
-      data = {
+  beforeEach((done) => {
+    request.
+      post('/ajax').
+      send({
         type: 'ewd-register',
-        application: 'test-app'
-      };
-    });
+        application: 'demo'
+      }).
+      end((err, res) => {
+        if (err) return done.fail(err);
 
-    it('should register app using websockets', (done) => {
-      const socket = io.connect('ws://localhost:8080');
-
-      socket.on('connect', () => socket.emit('ewdjs', data));
-      socket.on('ewdjs', (responseObj) => {
-        socket.disconnect();
-
-        expect(responseObj).toEqual({
-          type: 'ewd-register',
-          finished: true,
-          message: {
-            token: jasmine.any(String)
-          },
-          responseTime: jasmine.stringMatching(/^\d*ms$/)
-        });
-        expect(utils.isUUID(responseObj.message.token)).toBeTruthy();
+        data = {
+          type: 'ewd-fragment',
+          service: 'ewd-mock',
+          token: res.body.token,
+          params: {
+            file: 'template.html',
+            targetId: 'targetId'
+          }
+        };
 
         done();
       });
-    });
-
-    it('should register app using ajax', (done) => {
-      request.
-        post('/ajax').
-        send(data).
-        expect(200).
-        expect(res => {
-          expect(utils.isUUID(res.body.token)).toBeTruthy();
-        }).
-        end(err => err ? done.fail(err) : done());
-    });
   });
 
-  describe('ewd-reregister', () => {
-    let data;
-
-    beforeEach((done) => {
-      request.
-        post('/ajax').
-        send({
-          type: 'ewd-register',
-          application: 'test-app'
-        }).
-        end((err, res) => {
-          if (err) return done.fail(err);
-
-          data = {
-            type: 'ewd-reregister',
-            token: res.body.token
-          };
-
-          done();
-        });
-    });
-
-    it('should reregister app using websockets', (done) => {
+  describe('ewd-fragment', () => {
+    it('should get fragment using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -94,10 +53,11 @@ const utils = require('../utils');
         socket.disconnect();
 
         expect(responseObj).toEqual({
-          type: 'ewd-reregister',
+          type: 'ewd-fragment',
           finished: true,
           message: {
-            ok: true
+            fragmentName: 'template.html',
+            content: '<h2>This is fragment</h2>'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -106,46 +66,27 @@ const utils = require('../utils');
       });
     });
 
-    it('should reregister app using ajax', (done) => {
+    it('should get fragment using ajax', (done) => {
       request.
         post('/ajax').
         send(data).
         expect(200).
         expect(res => {
           expect(res.body).toEqual({
-            ok: true
+            fragmentName: 'template.html',
+            content: '<h2>This is fragment</h2>'
           });
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
-  describe('custom message', () => {
-    let data;
-
-    beforeEach((done) => {
-      request.
-        post('/ajax').
-        send({
-          type: 'ewd-register',
-          application: 'test-app'
-        }).
-        end((err, res) => {
-          if (err) return done.fail(err);
-
-          data = {
-            type: 'test',
-            token: res.body.token,
-            params: {
-              text: 'Hello world'
-            }
-          };
-
-          done();
-        });
+  describe('have no permissions', () => {
+    beforeEach(() => {
+      data.service = 'ewd-quux';
     });
 
-    it('should be able to send message using websockets', (done) => {
+    it('should not get fragment due to permissions using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -153,10 +94,10 @@ const utils = require('../utils');
         socket.disconnect();
 
         expect(responseObj).toEqual({
-          type: 'test',
+          type: 'ewd-fragment',
           finished: true,
           message: {
-            text: 'You sent: Hello world'
+            error: 'ewd-quux service is not permitted for the demo application'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -165,14 +106,55 @@ const utils = require('../utils');
       });
     });
 
-    it('should send message using ajax', (done) => {
+    it('should not get fragment due to permissions using ajax', (done) => {
       request.
         post('/ajax').
         send(data).
-        expect(200).
+        expect(400).
         expect(res => {
           expect(res.body).toEqual({
-            text: 'You sent: Hello world'
+            error: 'ewd-quux service is not permitted for the demo application'
+          });
+        }).
+        end(err => err ? done.fail(err) : done());
+    });
+  });
+
+  describe('file does not exist', () => {
+    beforeEach(() => {
+      data.params.file = 'quux.html';
+    });
+
+    it('should not get fragment due because template not found using websockets', (done) => {
+      const socket = io.connect('ws://localhost:8080');
+
+      socket.on('connect', () => socket.emit('ewdjs', data));
+      socket.on('ewdjs', (responseObj) => {
+        socket.disconnect();
+
+        expect(responseObj).toEqual({
+          type: 'ewd-fragment',
+          finished: true,
+          message: {
+            error: 'Fragment file quux.html does not exist',
+            file: 'quux.html',
+            service: 'ewd-mock'
+          },
+          responseTime: jasmine.stringMatching(/^\d*ms$/)
+        });
+
+        done();
+      });
+    });
+
+    it('should not get fragment due to permissions using ajax', (done) => {
+      request.
+        post('/ajax').
+        send(data).
+        expect(400).
+        expect(res => {
+          expect(res.body).toEqual({
+            error: 'Fragment file quux.html does not exist',
           });
         }).
         end(err => err ? done.fail(err) : done());

@@ -2,10 +2,9 @@
 
 const request = require('supertest')('http://localhost:8080');
 const io = require('socket.io-client');
-const isUUID = require('is-uuid');
 const utils = require('../utils');
 
-describe('integration/qewd/basic-express:', () => {
+describe('integration/qewd/basic:', () => {
   let cp;
 
   const options = {
@@ -20,7 +19,7 @@ describe('integration/qewd/basic-express:', () => {
     utils.exit(cp, done);
   });
 
-  it('should return correct html markup', (done) => {
+  it('should return correct html', (done) => {
     request
       .get('/test-app')
       .redirects(2)
@@ -30,7 +29,7 @@ describe('integration/qewd/basic-express:', () => {
       .end(err => err ? done.fail(err) : done());
   });
 
-  describe('register', () => {
+  describe('ewd-register', () => {
     let data;
 
     beforeEach(() => {
@@ -40,7 +39,7 @@ describe('integration/qewd/basic-express:', () => {
       };
     });
 
-    it('should be able to register app using websockets', (done) => {
+    it('should register app using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -55,25 +54,25 @@ describe('integration/qewd/basic-express:', () => {
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
-        expect(isUUID.v4(responseObj.message.token)).toBeTruthy();
+        expect(utils.isUUID(responseObj.message.token)).toBeTruthy();
 
         done();
       });
     });
 
-    it('should be able to register app using ajax', (done) => {
+    it('should register app using ajax', (done) => {
       request.
         post('/ajax').
         send(data).
         expect(200).
         expect(res => {
-          expect(isUUID.v4(res.body.token)).toBeTruthy();
+          expect(utils.isUUID(res.body.token)).toBeTruthy();
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
-  describe('reregister', () => {
+  describe('ewd-reregister', () => {
     let data;
 
     beforeEach((done) => {
@@ -95,7 +94,7 @@ describe('integration/qewd/basic-express:', () => {
         });
     });
 
-    it('should be able to reregister app using websockets', (done) => {
+    it('should reregister app using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -115,7 +114,7 @@ describe('integration/qewd/basic-express:', () => {
       });
     });
 
-    it('should be able to reregister app using ajax', (done) => {
+    it('should reregister app using ajax', (done) => {
       request.
         post('/ajax').
         send(data).
@@ -154,7 +153,7 @@ describe('integration/qewd/basic-express:', () => {
         });
     });
 
-    it('should be able to send message using websockets', (done) => {
+    it('should send message using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -165,7 +164,7 @@ describe('integration/qewd/basic-express:', () => {
           type: 'test',
           finished: true,
           message: {
-            text: 'You sent: Hello world via express'
+            text: 'You sent: Hello world'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -174,21 +173,21 @@ describe('integration/qewd/basic-express:', () => {
       });
     });
 
-    it('should be able to send message using ajax', (done) => {
+    it('should send message using ajax', (done) => {
       request.
         post('/ajax').
         send(data).
         expect(200).
         expect(res => {
           expect(res.body).toEqual({
-            text: 'You sent: Hello world via express'
+            text: 'You sent: Hello world'
           });
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
-  describe('no type handler error', () => {
+  describe('no type handler', () => {
     let data;
 
     beforeEach((done) => {
@@ -210,7 +209,7 @@ describe('integration/qewd/basic-express:', () => {
         });
     });
 
-    it('should be able to return error message using websockets', (done) => {
+    it('should return error message using websockets', (done) => {
       const socket = io.connect('ws://localhost:8080');
 
       socket.on('connect', () => socket.emit('ewdjs', data));
@@ -230,7 +229,7 @@ describe('integration/qewd/basic-express:', () => {
       });
     });
 
-    it('should be able to return error message using ajax', (done) => {
+    it('should return error message using ajax', (done) => {
       request.
         post('/ajax').
         send(data).

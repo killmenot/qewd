@@ -1,6 +1,5 @@
 'use strict';
 
-const isUUID = require('is-uuid');
 const request = require('supertest')('http://localhost:8080');
 const utils = require('../utils');
 
@@ -48,14 +47,14 @@ describe('integration/qewd/rest:', () => {
         send(data).
         expect(200).
         expect(res => {
-          expect(isUUID.v4(res.body.token)).toBeTruthy();
+          expect(utils.isUUID(res.body.token)).toBeTruthy();
         }).
         end(err => err ? done.fail(err) : done());
     });
   });
 
   describe('GET /api/search', () => {
-    it('should be able to make request using token', (done) => {
+    it('should send authenticated request using token', (done) => {
       request.
         get('/api/search').
         set('authorization', `Bearer ${token}`).
@@ -71,7 +70,7 @@ describe('integration/qewd/rest:', () => {
   });
 
   describe('GET /api/not-exist', () => {
-    it('should be able to return 404 not found', (done) => {
+    it('should return 404 not found', (done) => {
       request.
         get('/api/not-exist').
         set('authorization', `Bearer ${token}`).
@@ -84,5 +83,4 @@ describe('integration/qewd/rest:', () => {
         end(err => err ? done.fail(err) : done());
     });
   });
-
 });

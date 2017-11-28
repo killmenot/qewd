@@ -1,6 +1,6 @@
 const fork = require('child_process').fork;
-const QEWD_STARTED_TIMEOUT = process.env.QEWD_STARTED_TIMEOUT;
-const EXIT_TIMEOUT = process.env.EXIT_TIMEOUT;
+const isUUID = require('is-uuid');
+const isJWT = require('is-jwt');
 
 module.exports = {
 
@@ -9,7 +9,7 @@ module.exports = {
 
     cp.on('message', (message) => {
       if (message.type === 'qewd:started') {
-        setTimeout(callback, QEWD_STARTED_TIMEOUT);
+        setTimeout(callback, process.env.QEWD_STARTED_TIMEOUT);
       }
     });
 
@@ -17,7 +17,7 @@ module.exports = {
   },
 
   exit: (cp, callback) => {
-    cp.on('exit', () => setTimeout(callback, EXIT_TIMEOUT));
+    cp.on('exit', () => setTimeout(callback, process.env.EXIT_TIMEOUT));
     cp.kill();
   },
 
@@ -29,5 +29,9 @@ module.exports = {
       case 'gtm': return {type: 'gtm'};
       default: return {type: 'redis'};
     }
-  }
+  },
+
+  isUUID: x => isUUID.v4(x),
+
+  isJWT: (x) => isJWT(x),
 };

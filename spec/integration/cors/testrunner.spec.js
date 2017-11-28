@@ -3,7 +3,7 @@
 const request = require('supertest')('http://localhost:8080');
 const utils = require('../utils');
 
-describe('integration/qewd/cors-express:', () => {
+describe('integration/qewd/cors:', () => {
   let cp;
 
   const options = {
@@ -18,7 +18,7 @@ describe('integration/qewd/cors-express:', () => {
     utils.exit(cp, done);
   });
 
-  it('should be able to expose CORS headers', (done) => {
+  it('should expose CORS headers', (done) => {
     request.
       get('/').
       expect(200).
