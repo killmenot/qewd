@@ -756,7 +756,8 @@ describe('unit/appHandler:', () => {
   describe('ewd-reregister', () => {
     beforeEach(() => {
       session = {
-        socketId: 'socket-id'
+        socketId: 'socket-id',
+        ipAddress: '127.0.0.1',
       };
     });
 
@@ -791,7 +792,8 @@ describe('unit/appHandler:', () => {
       const messageObj = {
         type: 'ewd-reregister',
         token: 'tokenValue',
-        socketId: 'updated-socket-id'
+        socketId: 'updated-socket-id',
+        ipAddress: '192.168.1.1'
       };
 
       sessions.authenticate.and.returnValue({
@@ -803,6 +805,7 @@ describe('unit/appHandler:', () => {
 
       expect(sessions.authenticate).toHaveBeenCalledWith('tokenValue', 'noCheck');
       expect(session.socketId).toBe('updated-socket-id');
+      expect(session.ipAddress).toBe('192.168.1.1');
       expect(finished).toHaveBeenCalledWith({
         ok: true
       });

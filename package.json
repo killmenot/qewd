@@ -21,7 +21,7 @@
     "url": "https://github.com/robtweed/qewd/issues"
   },
   "scripts": {
-    "lint": "eslint spec",
+    "lint": "eslint lib spec",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "jasmine --config=spec/support/unit.json",
     "test:integration": "jasmine --config=spec/support/integration.json",
