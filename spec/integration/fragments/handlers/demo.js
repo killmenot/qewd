@@ -2,6 +2,6 @@
 
 module.exports = {
   servicesAllowed: {
-    'ewd-mock': true
+    'ewd-fragments-mock': true
   }
 };

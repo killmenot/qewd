@@ -11,14 +11,10 @@ q.on('start', function () {
   this.worker.loaderFilePath = path.join(__dirname, '../../..', 'node_modules/ewd-qoper8-worker.js');
 });
 
-let workersStarted = 0;
-q.on('workerStarted', function () {
-  workersStarted++;
-  if (workersStarted === q.worker.poolSize) {
-    process.send({
-      type: 'qewd:started'
-    });
-  }
+q.on('started', function () {
+  process.send({
+    type: 'qewd:started'
+  });
 });
 
 const config = {
@@ -28,9 +24,11 @@ const config = {
   port: 8080,
   poolSize: 2,
   database: utils.db(),
-  poolPrefork: true,
+  jwt: {
+    secret: 'someSecret123'
+  },
   moduleMap: {
-    'test-app': path.join(__dirname, 'handlers/test-app')
+    'baz': path.join(__dirname, 'handlers/baz')
   }
 };
 qewd.start(config);

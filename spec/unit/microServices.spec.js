@@ -383,7 +383,8 @@ describe('unit/microServices:', () => {
   });
 
   describe('ewd-registered', () => {
-    xit('should save registration token', () => {
+    // TODO: find out the correct way to test this case
+    it('should save registration token', () => {
       const serviceConfig = {
         destinations: {
           login_service: {

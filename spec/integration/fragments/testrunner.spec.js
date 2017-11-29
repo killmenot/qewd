@@ -32,7 +32,7 @@ describe('integration/qewd/ewd-fragment:', () => {
 
         data = {
           type: 'ewd-fragment',
-          service: 'ewd-mock',
+          service: 'ewd-fragments-mock',
           token: res.body.token,
           params: {
             file: 'template.html',
@@ -138,7 +138,7 @@ describe('integration/qewd/ewd-fragment:', () => {
           message: {
             error: 'Fragment file quux.html does not exist',
             file: 'quux.html',
-            service: 'ewd-mock'
+            service: 'ewd-fragments-mock'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });

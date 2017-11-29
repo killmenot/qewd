@@ -2,7 +2,7 @@
 
 module.exports = {
   servicesAllowed: {
-    'ewd-helloworld-service': true,
-    'ewd-mock': false
+    'ewd-service-mock': true,
+    'ewd-fragments-mock': false
   }
 };

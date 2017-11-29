@@ -32,7 +32,7 @@ describe('integration/qewd/service-modules:', () => {
 
         data = {
           type: 'helloWorld',
-          service: 'ewd-helloworld-service',
+          service: 'ewd-service-mock',
           token: res.body.token
         };
 
@@ -77,9 +77,52 @@ describe('integration/qewd/service-modules:', () => {
     });
   });
 
+  describe('before handler', () => {
+    beforeEach(() => {
+      data.params = {
+        beforeHandler: true
+      };
+    });
+
+    it('should stop processing message in before handler using websockets', (done) => {
+      const socket = io.connect('ws://localhost:8080');
+
+      socket.on('connect', () => socket.emit('ewdjs', data));
+      socket.on('ewdjs', (responseObj) => {
+        socket.disconnect();
+
+        expect(responseObj).toEqual({
+          type: 'helloWorld',
+          finished: true,
+          message: {
+            type: 'helloWorld',
+            text: 'Hello from beforeHandler!'
+          },
+          responseTime: jasmine.stringMatching(/^\d*ms$/)
+        });
+
+        done();
+      });
+    });
+
+    it('should stop processing message in before handler using ajax', (done) => {
+      request.
+        post('/ajax').
+        send(data).
+        expect(200).
+        expect(res => {
+          expect(res.body).toEqual({
+            type: 'helloWorld',
+            text: 'Hello from beforeHandler!'
+          });
+        }).
+        end(err => err ? done.fail(err) : done());
+    });
+  });
+
   describe('service has no permissions', () => {
     beforeEach(() => {
-      data.service = 'ewd-mock';
+      data.service = 'ewd-fragments-mock';
       data.type = 'mock';
     });
 
@@ -94,8 +137,8 @@ describe('integration/qewd/service-modules:', () => {
           type: 'mock',
           finished: true,
           message: {
-            service: 'ewd-mock',
-            error: 'ewd-mock service is not permitted for the demo application'
+            service: 'ewd-fragments-mock',
+            error: 'ewd-fragments-mock service is not permitted for the demo application'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -111,7 +154,7 @@ describe('integration/qewd/service-modules:', () => {
         expect(400).
         expect(res => {
           expect(res.body).toEqual({
-            error: 'ewd-mock service is not permitted for the demo application'
+            error: 'ewd-fragments-mock service is not permitted for the demo application'
           });
         }).
         end(err => err ? done.fail(err) : done());
@@ -134,8 +177,8 @@ describe('integration/qewd/service-modules:', () => {
           type: 'quux',
           finished: true,
           message: {
-            service: 'ewd-helloworld-service',
-            error: 'No handler defined for ewd-helloworld-service service messages of type quux'
+            service: 'ewd-service-mock',
+            error: 'No handler defined for ewd-service-mock service messages of type quux'
           },
           responseTime: jasmine.stringMatching(/^\d*ms$/)
         });
@@ -151,7 +194,7 @@ describe('integration/qewd/service-modules:', () => {
         expect(400).
         expect(res => {
           expect(res.body).toEqual({
-            error: 'No handler defined for ewd-helloworld-service service messages of type quux',
+            error: 'No handler defined for ewd-service-mock service messages of type quux',
           });
         }).
         end(err => err ? done.fail(err) : done());

@@ -16,11 +16,7 @@ describe('integration/qewd/pool-prefork:', () => {
     cp = utils.fork('./qewd', options, done);
   });
 
-  afterAll((done) => {
-    utils.exit(cp, done);
-  });
-
-  beforeEach((done) => {
+  beforeAll((done) => {
     request.
       post('/ajax').
       send({
@@ -40,6 +36,10 @@ describe('integration/qewd/pool-prefork:', () => {
 
         done();
       });
+  });
+
+  afterAll((done) => {
+    utils.exit(cp, done);
   });
 
   it('should send message using websockets', (done) => {
