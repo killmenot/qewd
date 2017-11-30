@@ -31,7 +31,53 @@ module.exports = {
     }
   },
 
-  isUUID: x => isUUID.v4(x),
+  isUUID: (x) => isUUID.v4(x),
 
   isJWT: (x) => isJWT(x),
+
+  beforeRouter: (webServer) => {
+    return webServer === 'express' ?
+      (req, res, next) => {
+        if (req.query.beforeRouter) {
+          return res.json({
+            text: 'Hello beforeRouter!'
+          });
+        }
+
+        next();
+      } :
+      (ctx, next) => {
+        if (ctx.request.query.beforeRouter) {
+          ctx.body = {
+            text: 'Hello beforeRouter!'
+          };
+
+          return Promise.resolve();
+        }
+
+        return next();
+      };
+  },
+
+  afterRouter: (webServer) => {
+    return webServer === 'express' ?
+      (req, res) => {
+        if (req.query.afterRouter) {
+          return res.json({
+            text: 'Hello afterRouter!'
+          });
+        }
+
+        res.json(res.locals.message);
+      } :
+      (ctx, next) => {
+        next().then(() => {
+          ctx.body = ctx.request.query.afterRouter ?
+            {
+              text: 'Hello afterRouter!'
+            } :
+            ctx.state.responseObj;
+        });
+      };
+  }
 };

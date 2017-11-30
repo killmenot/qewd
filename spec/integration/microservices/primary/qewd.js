@@ -76,7 +76,7 @@ const config = {
 const routes = [
   {
     path: '/api',
-    module: path.join(__dirname, 'handlers/services'),
+    module: path.join(__dirname, 'handlers'),
     errors: {
       notfound: {
         text: 'Resource Not Recognised',
