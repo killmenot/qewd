@@ -30,7 +30,8 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "pre-commit": [
-    "lint"
+    "lint",
+    "test:unit"
   ],
   "nyc": {
     "all": true,
