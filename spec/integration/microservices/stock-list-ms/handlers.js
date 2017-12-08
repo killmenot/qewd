@@ -31,6 +31,9 @@ module.exports = {
       '/api/store/:destination/stocklist': {
         GET: getStockList
       },
+      '/api/store/all/category/:category/stocklist': {
+        GET: getStockListByCategory
+      },
       '/api/store/:destination/category/:category/stocklist': {
         GET: getStockListByCategory
       }

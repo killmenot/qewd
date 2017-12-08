@@ -25,7 +25,15 @@ module.exports = {
 
   db: () => {
     switch (process.env.DATABASE) {
-      case 'cache': return {type: 'cache'};
+      case 'cache': return {
+        type: 'cache',
+        params: {
+          path: process.env.CACHE_MGR_PATH,
+          username: process.env.CACHE_USERNAME,
+          password: process.env.CACHE_PASSWORD,
+          namespace: process.env.CACHE_NAMESPACE
+        }
+      };
       case 'gtm': return {type: 'gtm'};
       default: return {type: 'redis'};
     }

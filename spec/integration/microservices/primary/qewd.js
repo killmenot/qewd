@@ -63,12 +63,49 @@ const config = {
         destination: 'all_stores'
       },
       {
+        path: '/api/store/request/stocklist',
+        method: 'GET',
+        onRequest: (args, send, finished) => {
+          finished({
+            message: {
+              text: 'Hello from onRequest handler'
+            }
+          });
+        }
+      },
+      {
         path: '/api/store/:destination/stocklist',
-        method: 'GET'
+        method: 'GET',
+        onResponse: (args) => {
+          if (args.message.query.onResponse === 'intercept') {
+            args.responseObj.message.text = 'The response was intercepted by onResponse handler.';
+          }
+
+          if (args.message.query.onResponse === 'handle') {
+            args.responseObj.message.text = 'The response was handled by onResponse handler.';
+            args.handleResponse(args.responseObj);
+
+            return true;
+          }
+        }
+      },
+      {
+        path: '/api/store/all/category/:category/stocklist',
+        method: 'GET',
+        destination: 'all_stores',
+        onResponse: (args) => {
+          args.responseObj.message.text = 'The response was handled by onResponse handler.';
+          args.handleResponse(args.responseObj);
+
+          return true;
+        }
       },
       {
         path: '/api/store/:destination/category/:category/stocklist',
-        method: 'GET'
+        method: 'GET',
+        onResponse: (args) => {
+          args.responseObj.message.text = 'The response was intercepted by onResponse handler.';
+        }
       }
     ]
   }
