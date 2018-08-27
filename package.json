@@ -48,7 +48,7 @@
     "ewd-client": "^1.17.0",
     "ewd-qoper8": "^3.16.0",
     "ewd-qoper8-cache": "^2.2.1",
-    "ewd-qoper8-express": "github:killmenot/ewd-qoper8-express#refactoring",
+    "ewd-qoper8-express": "github:killmenot/ewd-qoper8-express#debug",
     "ewd-qoper8-gtm": "^2.3.2",
     "ewd-qoper8-koa": "github:killmenot/ewd-qoper8-koa#tests",
     "ewd-qoper8-redis": "^0.1.1",
