@@ -23,6 +23,7 @@ describe('unit/sockets:', () => {
   beforeAll(() => {
     Master = function () {
       this.workerResponseHandlers = {};
+      this.userDefined = {};
       this.handleMessage = jasmine.createSpy();
     };
 

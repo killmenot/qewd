@@ -479,7 +479,7 @@ describe('unit/jwtHandler:', () => {
         iss: 'qewd.jwt',
         application: 'foo',
         timeout: 300,
-        qewd: 'bf63524746e477330ea1e2de9b40593b841ddad00d3097815f61cb0ed9cb6051c4b3bd54e0b8657debf79b3abcceed01a176b8fbdaa48f1efd48e47a0ed2fd1f6eef7ce16a71e376d984b9f91d833f5c9290c2dd3d69e75f92cbba776ce8901b967382a2b8486a3e'
+        qewd: 'b7aedbb5c9e3feb2371358951d61fd3264a1e22641d0097803d1cddacbb62f6c54c0f64a47256b23b7703135561d15505e93679b3619e54a9e36fd86dff3d98abec5d24a370a4351feff2e540018f4ec30a1d097922627e9f937975979530eefe2c6543fb2cc7cbbe3bd79eba6bc9fc4'
       }, 'jwtSecret');
       expect(actual).toBe('jwtToken');
     });
@@ -609,7 +609,7 @@ describe('unit/jwtHandler:', () => {
         iss: 'qewd.jwt',
         application: 'foo',
         timeout: 300,
-        qewd: 'bf63524746e477330ea1e2de9b40593b841ddad00d3097815f61cb0ed9cb6051c4b3bd54e0b8657debf79b3abcceed01a176b8fbdaa48f1efd48e47a0ed2fd1f6eef7ce16a71e376d984b9f91d833f5c929093'
+        qewd: 'b7aedbb5c9e3feb2371358951d61fd3264a1e22641d0097803d1cddacbb62f6c54c0f64a47256b23b7703135561d15505e93679b3619e54a9e36fd86dff3d98abec5d24a370a4351feff2e540018f4ec29101195ab784dcc98fc9a4a940018f4'
       }, 'jwtSecret');
     });
   });
@@ -630,7 +630,7 @@ describe('unit/jwtHandler:', () => {
         iss: 'qewd.jwt',
         application: 'foo',
         timeout: 300,
-        qewd: 'bf63524746e477330ea1e2de9b40593b841ddad00d3097815f61cb0ed9cb6051c4b3bd54e0b8657debf79b3abcceed01a176b8fbdaa48f1efd48e47a0ed2fd1f6eef7ce16a71e376d984b9f91d833f5c9290c2dd3d69e75f92cbba776ce8901b967382a2b8486a3e'
+        qewd: 'b7aedbb5c9e3feb2371358951d61fd3264a1e22641d0097803d1cddacbb62f6c54c0f64a47256b23b7703135561d15505e93679b3619e54a9e36fd86dff3d98abec5d24a370a4351feff2e540018f4ec29101195ab784dcc98fc9a4a940018f4'
       };
     });
 
@@ -672,7 +672,6 @@ describe('unit/jwtHandler:', () => {
             socketId: '/#yf_vd-S9Q7e-LX28AAAS',
             ipAddress: '127.0.0.1',
             authenticated: false,
-            application: 'quux'
           },
           qewd_list: {
             socketId: true,

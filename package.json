@@ -1,15 +1,15 @@
 {
   "name": "qewd",
-  "version": "2.24.6",
+  "version": "2.38.0",
+  "description": "Quick and Easy Web Development",
+  "main": "index.js",
+  "config": {
+    "date": "16 August 2018"
+  },
   "engines": {
     "node": ">= 6",
     "npm": ">= 3.8.6"
   },
-  "config": {
-    "date": "23 October 2017"
-  },
-  "description": "Quick and Easy Web Development",
-  "main": "index.js",
   "author": "Rob Tweed, M/Gateway Developments Ltd",
   "license": "Apache-2.0",
   "homepage": "https://github.com/robtweed/qewd#readme",
@@ -52,6 +52,7 @@
     "ewd-qoper8-gtm": "^2.3.2",
     "ewd-qoper8-koa": "github:killmenot/ewd-qoper8-koa#tests",
     "ewd-qoper8-redis": "^0.1.1",
+    "ewd-qoper8-iris": "^1.0.0",
     "ewd-session": "^2.19.0",
     "express": "^4.16.2",
     "fs-extra": "^4.0.2",
@@ -60,6 +61,7 @@
     "koa-better-router": "^2.1.1",
     "koa-bodyparser": "^4.2.0",
     "koa-static": "^4.0.1",
+    "module-exists": "^0.2.1",
     "qewd-monitor": "^2.4.0",
     "qewd-router": "^1.12.0",
     "redis": "^2.8.0",
